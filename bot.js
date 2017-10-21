@@ -23,8 +23,7 @@ client.on('message', message => {
 					if (response.statusCode == 200)
 					{
 						var name = body.substring(body.indexOf('<p style="margin-left:11%; margin-top: 1em">') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ");
-						var messageText = "```NAME\n" + name + "\n```");
-						message.channel.send(messageText);
+						message.channel.send("`" + name + "`");
 					}
 				});
 			break;
