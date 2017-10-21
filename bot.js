@@ -16,8 +16,9 @@ client.on('message', message => {
             case 'ping':
                 message.channel.send('Pong!');
             break;
+			// !man
 			case 'man':
-				var url = "https://man.cx" + man;
+				var url = "https://man.cx/" + man;
 				request.get(url, function(error, response, body) {
 					message.channel.send('error: ' + error);
 					message.channel.send('statusCode: ' + response.statusCode);
