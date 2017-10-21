@@ -7,7 +7,7 @@ client.on('ready', () => {
 });
 
 client.on('message', message => {
-    if (message.content.substring(0, 1) == '!') {
+    if (message.content.substring(0, 1) == process.env.PREFIX) {
         var args = message.content.substring(1).split(' ');
         var cmd = args[0];
 		var man = args[1];
@@ -26,7 +26,7 @@ client.on('message', message => {
 						{
 							message.channel.send(":negative_squared_cross_mark: Couldn't find a man page for `" + man + "`!");
 						} else {
-							var name = body.substring(body.indexOf('<p style="margin-left:11%; margin-top: 1em">') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
+							var name = body.substring(body.indexOf('NAME</a></h2>') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
 							message.channel.send(":white_check_mark: Man page found for `" + man + "`!"); 
 							message.channel.send("`" + name + "`");
 							message.channel.send(url);
@@ -40,4 +40,4 @@ client.on('message', message => {
 });
 
 
-client.login("MzcxMzU3NjU4MDA5MzA1MTAx.DM0dTg.2jd8WmVHggmvYT5_d-ZUV7UekUc");
+client.login(process.env.BOT_TOKEN);
