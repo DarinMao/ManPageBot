@@ -10,7 +10,13 @@ client.on('message', message => {
     if (message.content.substring(0, 1) == process.env.PREFIX) {
         var args = message.content.substring(1).split(' ');
         var cmd = args[0];
-		var man = args[1];
+		var man;
+		if (args.length == 1)
+		{
+			man = false
+		} else {
+			man = args[1];
+		}
         switch(cmd) {
             // !ping
             case 'ping':
@@ -18,21 +24,28 @@ client.on('message', message => {
             break;
 			// !man
 			case 'man':
-				var url = "https://man.cx/" + man;
-				request.get(url, function(error, response, body) {
-					if (response.statusCode == 200)
-					{
-						if (body.indexOf("Search results for") != -1)
+				if (man == false)
+				{
+					message.channel.send(":negative_squared_cross_mark: Please specify a command!");
+				} else {
+					var url = "https://man.cx/" + man;
+					request.get(url, function(error, response, body) {
+						if (response.statusCode == 200)
 						{
-							message.channel.send(":negative_squared_cross_mark: Couldn't find a man page for `" + man + "`!");
+							if (body.indexOf("Search results for") != -1)
+							{
+								message.channel.send(":negative_squared_cross_mark: Couldn't find a man page for `" + man + "`!");
+							} else {
+								var name = body.substring(body.indexOf('NAME</a></h2>') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
+								message.channel.send(":white_check_mark: Man page found for `" + man + "`!"); 
+								message.channel.send("`" + name + "`");
+								message.channel.send(url);
+							}
 						} else {
-							var name = body.substring(body.indexOf('NAME</a></h2>') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
-							message.channel.send(":white_check_mark: Man page found for `" + man + "`!"); 
-							message.channel.send("`" + name + "`");
-							message.channel.send(url);
+							message.channel.send(":negative_squared_cross_mark: Error " + response.statusCode + ": " + error);
 						}
-					}
-				});
+					});
+				}
 			break;
 			// !info
 			case 'info':
