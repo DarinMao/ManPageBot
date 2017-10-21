@@ -24,6 +24,7 @@ client.on('message', message => {
 					{
 						var name = body.substring(body.indexOf('<p style="margin-left:11%; margin-top: 1em">') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ");
 						message.channel.send("`" + name + "`");
+						message.channel.send(url);
 					}
 				});
 			break;
