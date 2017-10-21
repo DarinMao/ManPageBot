@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const requst = require('request');
 const client = new Discord.Client();
 
 client.on('ready', () => {
@@ -16,7 +17,12 @@ client.on('message', message => {
                 message.channel.send('Pong!');
             break;
 			case 'man':
-				message.channel.send('Received: ' + man);
+				request('https://man.cx/' + man, function(error, response, body) {
+					if (response.statusCode == 200)
+					{
+						message.channel.send(body);
+					}
+				});
 			break;
             // Just add any case commands if you want to..
          }
