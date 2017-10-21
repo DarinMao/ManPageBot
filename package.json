@@ -1,0 +1,8 @@
+{
+	"name":"manpage-bot",
+	"version":"1.0.0",
+	"description":"A Discord bot that provides *nix manual pages",
+	"main":"bot.js",
+	"author":"Darin Mao",
+	"dependencies":{}
+}
