@@ -39,10 +39,11 @@ client.on('message', message => {
 				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(error, response, body) {
 					if (response.statusCode == 200)
 					{
-						request.get(body.object.url, function(error, response, body) {
+						request.get(body.object.url, function(error, response, subbody) {
 							if (response.statusCode == 200)
 							{
-								message.channel.send("```Discord Man Page Bot (Darin Mao)\n\nLast Update: " + body.committer.date + "(" + body.html_url + ")```");
+
+								message.channel.send("```Discord Man Page Bot (Darin Mao)\n\nLast Update: " + subbody.committer.date + "(" + subbody.html_url + ")```");
 								message.channel.send("Use `" + process.env.PREFIX + "help` for command list");
 							}
 						});
