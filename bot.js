@@ -36,7 +36,7 @@ client.on('message', message => {
 							{
 								message.channel.send(":negative_squared_cross_mark: Couldn't find a man page for `" + man + "`!");
 							} else {
-								var name = body.substring(body.indexOf("NAME") + 61, body.indexOf("</p>", body.indexOf("NAME") + 61)).replace("&minus;", "-").replace("&mdash;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
+								var name = body.substring(body.indexOf("NAME") + 61, body.indexOf("</p>", body.indexOf("NAME") + 61)).replace(/&.*;/g, "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
 								message.channel.send(":white_check_mark: Man page found for `" + man + "`!"); 
 								message.channel.send("`" + name + "`");
 								message.channel.send(url);
