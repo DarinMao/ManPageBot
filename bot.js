@@ -36,24 +36,12 @@ client.on('message', message => {
 			break;
 			// !info
 			case 'info':
-				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(error, response, body) {
-					if (response.statusCode == 200)
-					{
-						request.get(body.object.url, function(suberror, subresponse, subbody) {
-							if (subresponse.statusCode == 200)
-							{
-
-								message.channel.send("```Discord Man Page Bot (Darin Mao)\n\nLast Update: " + subbody.committer.date + "(" + subbody.html_url + ")```");
-								message.channel.send("Use `" + process.env.PREFIX + "help` for command list");
-							}
-						});
-					}
-				});
+				message.channel.send("```\nManPage bot\n\nGets *nix man pages in Discord\nDarin Mao 2017\nUse" + process.env.PREFIX + "help to show commands\n```");
 			break;
 			// !help
 			case 'help':
 				var prefix = process.env.PREFIX;
-				message.channel.send("```\n" + prefix + "help: Display this help message\n" + prefix + "man [command]: Gets man page for command\n" + prefix + "info: Displays bot info\n```");
+				message.channel.send("```\n" + prefix + "help: Display this help message\n" + prefix + "info: Displays bot info\n" + prefix + "ping: Pings the bot\n" + prefix + "man [command]: Gets man page for command\n```");
 			break;
             // Just add any case commands if you want to..
          }
