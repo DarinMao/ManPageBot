@@ -18,25 +18,13 @@ bot.on('ready', function (evt) {
 bot.on('message', function (user, userID, channelID, message, evt) {
     // Our bot needs to know if it will execute a command
     // It will listen for messages that will start with `!`
-    if (message.substring(0, 4) == '>man') {
-        var args = message.substring(4).split(' ');
-        var cmd = args[1];
-		
-		bot.sendMessage({
-			to: channelID,
-			message: 'Received: ' + cmd;
-		});
-        /*switch(cmd) {
-            // !ping
-            case 'ping':
-                bot.sendMessage({
-                    to: channelID,
-                    message: 'Pong!'
-                });
-            break;
-            // Just add any case commands if you want to..
-         }*/
-     }
+    if (message.content.substring(0, 4) == '>man') {
+       message.reply('received' + message.content);
+	}
+	if (message.content === 'ping')
+	{
+		message.reply('pong');
+	}
 });
 
 bot.login(process.env.BOT_TOKEN);
