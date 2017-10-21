@@ -22,9 +22,15 @@ client.on('message', message => {
 				request.get(url, function(error, response, body) {
 					if (response.statusCode == 200)
 					{
-						var name = body.substring(body.indexOf('<p style="margin-left:11%; margin-top: 1em">') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
-						message.channel.send("`" + name + "`");
-						message.channel.send(url);
+						if (body.indexOf("Search results for") != -1)
+						{
+							message.channel.send(":negative_squared_cross_mark: Couldn't find a man page for `" + man + "`!");
+						} else {
+							var name = body.substring(body.indexOf('<p style="margin-left:11%; margin-top: 1em">') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
+							message.channel.send(":white_check_mark: Man page found for `" + man + "`!"); 
+							message.channel.send("`" + name + "`");
+							message.channel.send(url);
+						}
 					}
 				});
 			break;
