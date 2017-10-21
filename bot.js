@@ -50,6 +50,11 @@ client.on('message', message => {
 					}
 				});
 			break;
+			// !help
+			case 'help':
+				var prefix = process.env.PREFIX;
+				message.channel.send("```\n" + prefix + "help: Display this help message\n" + prefix + "man [command]: Gets man page for command\n" + prefix + "info: Displays bot info\n```");
+			break;
             // Just add any case commands if you want to..
          }
      }
