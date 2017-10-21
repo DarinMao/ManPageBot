@@ -49,7 +49,7 @@ client.on('message', message => {
 			break;
 			// !info
 			case 'info':
-				message.channel.send("```\nManPage bot\n\nGets *nix man pages in Discord\nDarin Mao 2017\nUse " + process.env.PREFIX + "help to show commands\n```");
+				message.channel.send("```\nManPage bot v1.0.0\n\nGets *nix man pages in Discord\nDarin Mao 2017\nUse " + process.env.PREFIX + "help to show commands\n```");
 			break;
 			// !help
 			case 'help':
