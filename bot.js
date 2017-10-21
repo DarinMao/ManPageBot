@@ -1,5 +1,5 @@
 const Discord = require('discord.js');
-const https = require('https');
+const request = require('request');
 const client = new Discord.Client();
 
 client.on('ready', () => {
@@ -17,24 +17,11 @@ client.on('message', message => {
                 message.channel.send('Pong!');
             break;
 			case 'man':
-				var options = {
-					host: "man.cx",
-					path: "/" + man
-				};
-				var req = https.get(options, function(res) {
-					message.channel.send("STATUS: " + res.statusCode);
-					message.channel.send("HEADERS: " + JSON.stringify(res.headers));
-
-					var bodyChunks = [];
-					res.on('data', function(chunk) {
-						bodyChunks.push(chunk);
-					});.on('end', function() {
-						var body = Buffer.concat(bodyChunks);
-						message.channel.send("BODY: " + body);
-					});
-				});
-				req.on('error', function(e) {
-					message.channel.send("ERROR: " + e.message);
+				var url = "https://man.cx" + man;
+				request.get(url, function(error, response, body) {
+					message.channel.send('error: ' + error);
+					message.channel.send('statusCode: ' + response.statusCode);
+					message.channel.send('body:' + body);
 				});
 			break;
             // Just add any case commands if you want to..
