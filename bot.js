@@ -34,6 +34,21 @@ client.on('message', message => {
 					}
 				});
 			break;
+			// !info
+			case 'info':
+				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(error, response, body) {
+					if (response.statusCode == 200)
+					{
+						request.get(body.object.url, function(error, response, body) {
+							if (response.statusCode == 200)
+							{
+								message.channel.send("```Discord Man Page Bot (Darin Mao)\n\nLast Update: " + body.committer.date + "(" + body.html_url + ")```");
+								message.channel.send("Use `" + process.env.PREFIX + "help` for command list");
+							}
+						});
+					}
+				});
+			break;
             // Just add any case commands if you want to..
          }
      }
