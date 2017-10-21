@@ -18,10 +18,7 @@ client.on('message', message => {
             break;
 			case 'man':
 				request('https://man.cx/' + man, function(error, response, body) {
-					if (response.statusCode == 200)
-					{
-						message.channel.send(body);
-					}
+					message.channel.send(body);
 				});
 			break;
             // Just add any case commands if you want to..
