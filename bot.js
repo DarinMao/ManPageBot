@@ -1,6 +1,5 @@
 const Discord = require('discord.js');
 const request = require('request');
-const cheerio = require('cheerio');
 const client = new Discord.Client();
 
 client.on('ready', () => {
@@ -21,12 +20,11 @@ client.on('message', message => {
 			case 'man':
 				var url = "https://man.cx/" + man;
 				request.get(url, function(error, response, body) {
-//					message.channel.send('error: ' + error);
-//					message.channel.send('statusCode: ' + response.statusCode);
-					var cheeriobody = cheerio.load(body);
-					var messageText = "```NAME\n";
-					messageText += cheeriobody("main p").eq(0).text();
-					messageText += "\n```";
+					if (response.statusCode == 200)
+					{
+						var name = body.substring(body.indexOf('<p style="margin-left:11%; margin-top: 1em">'), body.indexOf('</p>'));
+						message.channel.send("```NAME\n" + name + "\n```");
+					}
 				});
 			break;
             // Just add any case commands if you want to..
