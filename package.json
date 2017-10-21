@@ -1,7 +1,7 @@
 {
 	"name": "ManPage",
 	"description": "A Discord bot that provides *nix manual pages",
-	"version: "1.0.0",
+	"version": "1.0.0",
 	"main": "bot.js",
 	"scripts": {
 		"start": "node bot.js"
