@@ -5,26 +5,20 @@ client.on('ready', () => {
     console.log('I am ready!');
 });
 
-client.on('message', function (user, userID, channelID, message, evt) {
+client.on('message', message => {
     if (message.content.substring(0, 1) == '!') {
-        var args = message.substring(1).split(' ');
+        var args = message.content.substring(1).split(' ');
         var cmd = args[0];
 		var man = args[1];
         switch(cmd) {
             // !ping
             case 'ping':
-                client.sendMessage({
-                    to: channelID,
-                    message: 'Pong!'
-                });
+                message.channel.send('Pong!');
             break;
-			// !man
 			case 'man':
-				client.sendMessage({
-					to: channelID,
-					message: 'Received: ' + man
-				});
+				message.channel.send('Received: ' + man);
 			break;
+            // Just add any case commands if you want to..
          }
      }
 });
