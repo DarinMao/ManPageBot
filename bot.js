@@ -22,7 +22,7 @@ client.on('message', message => {
 				request.get(url, function(error, response, body) {
 					if (response.statusCode == 200)
 					{
-						var name = body.substring(body.indexOf('<p style="margin-left:11%; margin-top: 1em">') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>/g, "");
+						var name = body.substring(body.indexOf('<p style="margin-left:11%; margin-top: 1em">') + 44, body.indexOf('</p>')).replace("&minus;", "-").replace(/\r?\n|\r/g, " ").replace(/<.+>(.+)<\/.+>/g, "$1");
 						message.channel.send("`" + name + "`");
 						message.channel.send(url);
 					}
