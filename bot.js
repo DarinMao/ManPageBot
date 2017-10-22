@@ -77,7 +77,7 @@ client.on('message', message => {
 								latestCommitURL = commitinfo.html_url;
 								message.channel.send(latestCommitDate);
 								message.channel.send(latestCommitURL);
-								var versionreq = {
+								/*var versionreq = {
 									url: 'https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json',
 									headers: {
 										'User-Agent': 'DarinMao'
@@ -92,7 +92,7 @@ client.on('message', message => {
 										message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse " + process.env.PREFIX + "help to list commands```");
 										message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
 									}
-								});
+								});*/
 							}
 						});
 					}
