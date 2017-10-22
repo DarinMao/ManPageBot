@@ -66,7 +66,7 @@ client.on('message', message => {
 						message.channel.send(commitinforequrl);
 					}
 				});
-				req(commitinforequrl, function(commitinfoerror, commmitinforesponse, commitinfobody) {
+				/*req(commitinforequrl, function(commitinfoerror, commmitinforesponse, commitinfobody) {
 					if (commitinforesponse.statusCode == 200)
 					{
 						var commitinfo = JSON.parse(commitinfobody);
@@ -83,9 +83,9 @@ client.on('message', message => {
 								message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse " + process.env.PREFIX + "help to list commands```");
 								message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
 							}
-						});*/
+						});
 					}
-				});
+				});*/
 			break;
 			// !help
 			case 'help':
