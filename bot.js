@@ -32,7 +32,7 @@ client.on('message', message => {
 					request.get(url, function(error, response, body) {
 						if (response.statusCode == 200)
 						{
-							if (body.indexOf("Search results for") != -1)
+							if (body.indexOf("NAME") == -1)
 							{
 								message.channel.send(":negative_squared_cross_mark: Couldn't find a man page for `" + man + "`!");
 							} else {
