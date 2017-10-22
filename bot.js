@@ -56,20 +56,26 @@ client.on('message', message => {
 					if (response.statusCode == 200)
 					{
 						var JSONBody = JSON.parse(body);
+						message.channel.send(body);
 						request.get(JSONBody.object.url, function(suberror, subresponse, subbody) {
-							var subJSONBody = JSON.parse(subbody);
-							latestCommitDate = subJSONBody.committer.date;
-							latestCommitURL = subJSONBody.html_url;
-						});
-						request.get("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(error, response, body) {
-							if (response.statusCode == 200)
+							if (subresponse.statusCode == 200)
 							{
-								var JSONBody = JSON.parse(body);
-								version = JSONBody.version;
-								message.channel.send("```\nManPage bot v" + version + "\n\nGets *nix man pages in Discord\nUse " + process.env.PREFIX + "help to show commands\n```");
-								message.channel.send("Latest Commit: " + latestCommitDate + " (" + latestCommitURL + ")");
+								var subJSONBody = JSON.parse(subbody);
+								message.channel.send(subbody);
+								latestCommitDate = subJSONBody.committer.date;
+								latestCommitURL = subJSONBody.html_url;
+								request.get("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(versionerror, versionresponse, versionbody) {
+									if (versionresponse.statusCode == 200)
+									{
+										var versionJSONBody = JSON.parse(versionbody);
+										message.channel.send(versionbody);
+										version = versionJSONBody.version;
+										message.channel.send("```\nManPage bot v" + version + "\n\nGets *nix man pages in Discord\nUse " + process.env.PREFIX + "help to show commands\n```");
+										message.channel.send("Latest Commit: " + latestCommitDate + " (" + latestCommitURL + ")");
+									}
+								});		
 							}
-						});	
+						});
 					}
 				});
 			break;
