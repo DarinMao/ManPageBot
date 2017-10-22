@@ -49,7 +49,17 @@ client.on('message', message => {
 			break;
 			// !info
 			case 'info':
-				message.channel.send("YES");
+				var version;
+				var latestCommitDate;
+				var latestCommitURL;
+				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(error, response, body) {
+					message.channel.send("1");
+					if (response.statusCode == 200)
+					{
+						message.channel.send("2");
+						message.channel.send(body);
+					}
+				});
 			break;
 			// !help
 			case 'help':
