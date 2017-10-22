@@ -52,22 +52,41 @@ client.on('message', message => {
 				var version;
 				var latestCommitDate;
 				var latestCommitURL;
-				var httpreq = {
+				var commitreq = {
 					url: 'https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master',
 					headers: {
 						'User-Agent': 'DarinMao'
 					}
 				};
-				request.get(httpreq, function(error, response, body) {
-					message.channel.send(response.statusCode);
-					if (response.statusCode == 200)
+				request.get(commitreq, function(commiterror, commitresponse, commitbody) {
+					if (commitresponse.statusCode == 200)
 					{
-						var info = JSON.parse(body);
-						message.channel.send("2");
-						message.channel.send(body);
-						message.channel.send(info.object.url);
+						var info = JSON.parse(commitbody);
+						var commitinforeq = {
+							url: info.object.url,
+							headers: {
+								'User-Agent': 'DarinMao'
+							}
+						}
+						request.get(commitinforeq, function(commitinfoerror, commmitinforesponse, commitinfobody) {
+							if (commitinforesponse.statusCode == 200)
+							{
+								var commitinfo = JSON.parse(commitinfobody);
+								latestCommitDate = commitInfo.commmitter.date;
+								latestCommitURL = commitInfo.html_url;
+							}
+						});
 					}
 				});
+				request.get("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(error, response, body) {
+					if (response.statusCode == 200)
+					{
+						var packageInfo = JSON.parse(body);
+						version = packageInfo.version;
+					}
+				});
+				message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse" + process.env.PREFIX + "help to list commands```");
+				message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
 			break;
 			// !help
 			case 'help':
