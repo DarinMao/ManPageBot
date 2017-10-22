@@ -70,6 +70,10 @@ client.on('message', message => {
 							}
 						}
 						request.get(commitinforeq, function(commitinfoerror, commmitinforesponse, commitinfobody) {
+							if (commitinforesponse.statusCode == 403)
+							{
+								message.channel.send("Not authorized!");
+							}
 							if (commitinforesponse.statusCode == 200)
 							{
 								var commitinfo = JSON.parse(commitinfobody);
