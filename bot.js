@@ -62,9 +62,9 @@ client.on('message', message => {
 					if (commitresponse.statusCode == 200)
 					{
 						var info = JSON.parse(commitbody);
-						message.channel.send(info.object.url);
+						var commitinforequrl = info.object.url;
 						var commitinforeq = {
-							url: info.object.url,
+							url: commitinforequrl,
 							headers: {
 								'User-Agent': 'DarinMao'
 							}
