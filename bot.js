@@ -49,7 +49,29 @@ client.on('message', message => {
 			break;
 			// !info
 			case 'info':
-				message.channel.send("```\nManPage bot v1.0.0\n\nGets *nix man pages in Discord\nDarin Mao 2017\nUse " + process.env.PREFIX + "help to show commands\n```");
+				var version;
+				var latestCommitDate;
+				var latestCommitURL;
+				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(error, response, body) {
+					if (response.statusCode == 200)
+					{
+						var JSONBody = JSON.parse(body);
+						request.get(JSONBody.object.url, function(suberror, subresponse, subbody) {
+							var subJSONBody = JSON.parse(subbody);
+							latestCommitDate = subJSONBody.committer.date;
+							latestCommitURL = subJSONBody.html_url;
+						});
+					}
+				});
+				request.get("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(error, response, body) {
+					if (response.statusCode == 200)
+					{
+						var JSONBody = JSON.parse(body);
+						version = JSONBody.version;
+					}
+				});
+				message.channel.send("```\nManPage bot v" + version + "\n\nGets *nix man pages in Discord\nUse " + process.env.PREFIX + "help to show commands\n```");
+				message.channel.send("Latest Commit: " + latestCommitDate + " (" + latestCommitURL + ")");
 			break;
 			// !help
 			case 'help':
