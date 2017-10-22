@@ -2,6 +2,12 @@ const Discord = require('discord.js');
 const request = require('request');
 const client = new Discord.Client();
 
+let req = request.defaults({
+	headers: {
+		'User-Agent': 'DarinMao'
+	}
+});
+
 client.on('ready', () => {
     console.log('I am ready!');
 });
@@ -52,24 +58,13 @@ client.on('message', message => {
 				var version;
 				var latestCommitDate;
 				var latestCommitURL;
-				var commitreq = {
-					url: 'https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master',
-					headers: {
-						'User-Agent': 'DarinMao'
-					}
-				};
-				request.get(commitreq, function(commiterror, commitresponse, commitbody) {
+				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(commiterror, commitresponse, commitbody) {
 					if (commitresponse.statusCode == 200)
 					{
 						var info = JSON.parse(commitbody);
 						var commitinforequrl = info.object.url;
-						var commitinforeq = {
-							url: commitinforequrl,
-							headers: {
-								'User-Agent': 'DarinMao'
-							}
-						}
-						request.get(commitinforeq, function(commitinfoerror, commmitinforesponse, commitinfobody) {
+						message.channel.send(commitinforequrl);
+						/*request.get(commitinforequrl, function(commitinfoerror, commmitinforesponse, commitinfobody) {
 							if (commitinforesponse.statusCode == 200)
 							{
 								var commitinfo = JSON.parse(commitinfobody);
@@ -77,13 +72,7 @@ client.on('message', message => {
 								latestCommitURL = commitinfo.html_url;
 								message.channel.send(latestCommitDate);
 								message.channel.send(latestCommitURL);
-								/*var versionreq = {
-									url: 'https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json',
-									headers: {
-										'User-Agent': 'DarinMao'
-									}
-								};
-								request.get(versionreq, function(versionerror, versionresponse, versionbody) {
+								request.get("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(versionerror, versionresponse, versionbody) {
 									if (versionresponse.statusCode == 200)
 									{
 										var packageInfo = JSON.parse(versionbody);
@@ -92,9 +81,9 @@ client.on('message', message => {
 										message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse " + process.env.PREFIX + "help to list commands```");
 										message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
 									}
-								});*/
+								});
 							}
-						});
+						});*/
 					}
 				});
 			break;
