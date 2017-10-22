@@ -68,10 +68,10 @@ client.on('message', message => {
 							if (commitinforesponse.statusCode == 200)
 							{
 								var commitinfo = JSON.parse(commitinfobody);
-								latestCommitDate = commitinfo.committer.date;
-								latestCommitURL = commitinfo.html_url;
-								message.channel.send(latestCommitDate);
-								message.channel.send(latestCommitURL);
+//								latestCommitDate = commitinfo.committer.date;
+//								latestCommitURL = commitinfo.html_url;
+//								message.channel.send(latestCommitDate);
+//								message.channel.send(latestCommitURL);
 							}
 						});
 					}
