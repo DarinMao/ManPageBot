@@ -64,26 +64,26 @@ client.on('message', message => {
 						var info = JSON.parse(commitbody);
 						var commitinforequrl = info.object.url;
 						message.channel.send(commitinforequrl);
-						req(commitinforequrl, function(commitinfoerror, commmitinforesponse, commitinfobody) {
-							if (commitinforesponse.statusCode == 200)
+					}
+				});
+				req(commitinforequrl, function(commitinfoerror, commmitinforesponse, commitinfobody) {
+					if (commitinforesponse.statusCode == 200)
+					{
+						var commitinfo = JSON.parse(commitinfobody);
+						latestCommitDate = commitinfo.commmitter.date;
+						latestCommitURL = commitinfo.html_url;
+						message.channel.send(latestCommitDate);
+						message.channel.send(latestCommitURL);
+						/*req("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(versionerror, versionresponse, versionbody) {
+							if (versionresponse.statusCode == 200)
 							{
-								var commitinfo = JSON.parse(commitinfobody);
-								latestCommitDate = commitinfo.commmitter.date;
-								latestCommitURL = commitinfo.html_url;
-								message.channel.send(latestCommitDate);
-								message.channel.send(latestCommitURL);
-								/*req("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(versionerror, versionresponse, versionbody) {
-									if (versionresponse.statusCode == 200)
-									{
-										var packageInfo = JSON.parse(versionbody);
-										version = packageInfo.version;
-										message.channel.send(version);
-										message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse " + process.env.PREFIX + "help to list commands```");
-										message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
-									}
-								});*/
+								var packageInfo = JSON.parse(versionbody);
+								version = packageInfo.version;
+								message.channel.send(version);
+								message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse " + process.env.PREFIX + "help to list commands```");
+								message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
 							}
-						});
+						});*/
 					}
 				});
 			break;
