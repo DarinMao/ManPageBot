@@ -64,7 +64,7 @@ client.on('message', message => {
 						var info = JSON.parse(commitbody);
 						var commitinforequrl = info.object.url;
 						message.channel.send(commitinforequrl);
-						req("https://api.github.com/repos/DarinMao/manpagediscord/git/commits/a1d459c38bd339f52892d7b0a543d9d22664c485", function(commitinfoerror, commmitinforesponse, commitinfobody) {
+/*						req("https://api.github.com/repos/DarinMao/manpagediscord/git/commits/a1d459c38bd339f52892d7b0a543d9d22664c485", function(commitinfoerror, commmitinforesponse, commitinfobody) {
 							message.channel.send(commitinforesponse.statusCode);
 /*							if (commitinforesponse.statusCode == 200)
 							{
@@ -73,8 +73,8 @@ client.on('message', message => {
 								latestCommitURL = commitinfo.html_url;
 								message.channel.send(latestCommitDate);
 								message.channel.send(latestCommitURL);
-							}*/
-						});
+							}
+						});*/
 					}
 				});
 			break;
