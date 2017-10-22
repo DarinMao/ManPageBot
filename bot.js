@@ -53,7 +53,7 @@ client.on('message', message => {
 				var latestCommitDate;
 				var latestCommitURL;
 				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(error, response, body) {
-					message.channel.send("1");
+					message.channel.send(response.statusCode);
 					if (response.statusCode == 200)
 					{
 						message.channel.send("2");
