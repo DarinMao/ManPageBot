@@ -65,14 +65,15 @@ client.on('message', message => {
 						var commitinforequrl = info.object.url;
 						message.channel.send(commitinforequrl);
 						req(commitinforequrl, function(commitinfoerror, commmitinforesponse, commitinfobody) {
-							if (commitinforesponse.statusCode == 200)
+							message.channel.send(commitinforesponse.statusCode);
+/*							if (commitinforesponse.statusCode == 200)
 							{
 								var commitinfo = JSON.parse(commitinfobody);
-//								latestCommitDate = commitinfo.committer.date;
-//								latestCommitURL = commitinfo.html_url;
-//								message.channel.send(latestCommitDate);
-//								message.channel.send(latestCommitURL);
-							}
+								latestCommitDate = commitinfo.committer.date;
+								latestCommitURL = commitinfo.html_url;
+								message.channel.send(latestCommitDate);
+								message.channel.send(latestCommitURL);
+							}*/
 						});
 					}
 				});
