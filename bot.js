@@ -55,7 +55,7 @@ client.on('message', message => {
 				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(error, response, body) {
 					if (response.statusCode == 200)
 					{
-						message.body.send(body);
+						message.channel.send(body);
 					}
 				});
 			break;
