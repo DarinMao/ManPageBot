@@ -58,23 +58,22 @@ client.on('message', message => {
 				var version;
 				var latestCommitDate;
 				var latestCommitURL;
-				var commitinforequrl;
 				req("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(commiterror, commitresponse, commitbody) {
 					if (commitresponse.statusCode == 200)
 					{
 						var info = JSON.parse(commitbody);
-						commitinforequrl = info.object.url;
+						var commitinforequrl = info.object.url;
 						message.channel.send(commitinforequrl);
-					}
-				});
-				req(commitinforequrl, function(commitinfoerror, commmitinforesponse, commitinfobody) {
-					if (commitinforesponse.statusCode == 200)
-					{
-						var commitinfo = JSON.parse(commitinfobody);
-						latestCommitDate = commitinfo.commmitter.date;
-						latestCommitURL = commitinfo.html_url;
-						message.channel.send(latestCommitDate);
-						message.channel.send(latestCommitURL);
+						req(commitinforequrl, function(commitinfoerror, commmitinforesponse, commitinfobody) {
+							if (commitinforesponse.statusCode == 200)
+							{
+								var commitinfo = JSON.parse(commitinfobody);
+								latestCommitDate = commitinfo.committer.date;
+								latestCommitURL = commitinfo.html_url;
+								message.channel.send(latestCommitDate);
+								message.channel.send(latestCommitURL);
+							}
+						});
 					}
 				});
 			break;
