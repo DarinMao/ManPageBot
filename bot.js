@@ -52,8 +52,13 @@ client.on('message', message => {
 				var version;
 				var latestCommitDate;
 				var latestCommitURL;
-				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(error, response, body) {
-					message.channel.send(response.statusCode);
+				var options = {
+					url: "https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master",
+					headers: {
+						"User-Agent": "DarinMao"
+					}
+				};
+				request.get(options, function(error, response, body) {
 					if (response.statusCode == 200)
 					{
 						message.channel.send("2");
