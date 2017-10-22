@@ -69,12 +69,12 @@ client.on('message', message => {
 								'User-Agent': 'DarinMao'
 							}
 						}
-						/*request.get(commitinforeq, function(commitinfoerror, commmitinforesponse, commitinfobody) {
+						request.get(commitinforeq, function(commitinfoerror, commmitinforesponse, commitinfobody) {
 							if (commitinforesponse.statusCode == 200)
 							{
 								var commitinfo = JSON.parse(commitinfobody);
-								latestCommitDate = commitInfo.commmitter.date;
-								latestCommitURL = commitInfo.html_url;
+								latestCommitDate = commitinfo.commmitter.date;
+								latestCommitURL = commitinfo.html_url;
 								message.channel.send(latestCommitDate);
 								message.channel.send(latestCommitURL);
 								var versionreq = {
@@ -94,7 +94,7 @@ client.on('message', message => {
 									}
 								});
 							}
-						});*/
+						});
 					}
 				});
 			break;
