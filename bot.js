@@ -56,7 +56,7 @@ client.on('message', message => {
 			// !help
 			case 'help':
 				var prefix = process.env.PREFIX;
-				message.channel.send("```\n" + prefix + "help: Display this help message\n" + prefix + "info: Displays bot info\n" + prefix + "ping: Pings the bot\n" + prefix + "man [command]: Gets man page for command\n```");
+				message.channel.send("```\n" + prefix + "help: Display this help message\n" + prefix + "ping: Pings the bot\n" + prefix + "man [command]: Gets man page for command\n```");
 			break;
             // Just add any case commands if you want to..
          }
