@@ -59,8 +59,6 @@ client.on('message', message => {
 					}
 				};
 				request.get(commitreq, function(commiterror, commitresponse, commitbody) {
-					message.channel.send(commiterror);
-					message.channel.send(commitresponse.statusCode);
 					if (commitresponse.statusCode == 200)
 					{
 						var info = JSON.parse(commitbody);
@@ -72,8 +70,6 @@ client.on('message', message => {
 							}
 						}
 						request.get(commitinforeq, function(commitinfoerror, commmitinforesponse, commitinfobody) {
-							message.channel.send(commitinfoerror);
-							message.channel.send(commitinforesponse.statusCode);
 							if (commitinforesponse.statusCode == 200)
 							{
 								var commitinfo = JSON.parse(commitinfobody);
@@ -88,8 +84,6 @@ client.on('message', message => {
 									}
 								};
 								request.get(versionreq, function(versionerror, versionresponse, versionbody) {
-									message.channel.send(versionerror);
-									message.channel.send(versionresponse.statusCode);
 									if (versionresponse.statusCode == 200)
 									{
 										var packageInfo = JSON.parse(versionbody);
