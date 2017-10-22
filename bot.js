@@ -59,6 +59,7 @@ client.on('message', message => {
 					}
 				};
 				request.get(options, function(error, response, body) {
+					message.channel.send(response.statusCode);
 					if (response.statusCode == 200)
 					{
 						message.channel.send("2");
