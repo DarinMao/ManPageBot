@@ -58,7 +58,7 @@ client.on('message', message => {
 				var version;
 				var latestCommitDate;
 				var latestCommitURL;
-				request.get("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(commiterror, commitresponse, commitbody) {
+				req("https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master", function(commiterror, commitresponse, commitbody) {
 					if (commitresponse.statusCode == 200)
 					{
 						var info = JSON.parse(commitbody);
