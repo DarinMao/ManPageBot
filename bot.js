@@ -74,19 +74,19 @@ client.on('message', message => {
 								var commitinfo = JSON.parse(commitinfobody);
 								latestCommitDate = commitInfo.commmitter.date;
 								latestCommitURL = commitInfo.html_url;
+								request.get("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(error, response, body) {
+									if (response.statusCode == 200)
+									{
+										var packageInfo = JSON.parse(body);
+										version = packageInfo.version;
+										message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse " + process.env.PREFIX + "help to list commands```");
+										message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
+									}
+								});
 							}
 						});
 					}
 				});
-				request.get("https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json", function(error, response, body) {
-					if (response.statusCode == 200)
-					{
-						var packageInfo = JSON.parse(body);
-						version = packageInfo.version;
-					}
-				});
-				message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse" + process.env.PREFIX + "help to list commands```");
-				message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
 			break;
 			// !help
 			case 'help':
