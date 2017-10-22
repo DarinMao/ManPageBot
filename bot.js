@@ -52,18 +52,20 @@ client.on('message', message => {
 				var version;
 				var latestCommitDate;
 				var latestCommitURL;
-				var options = {
-					url: "https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master",
+				var httpreq = {
+					url: 'https://api.github.com/repos/DarinMao/manpagediscord/git/refs/heads/master',
 					headers: {
-						"User-Agent": "DarinMao"
+						'User-Agent': 'DarinMao'
 					}
 				};
-				request.get(options, function(error, response, body) {
+				request.get(httpreq, function(error, response, body) {
 					message.channel.send(response.statusCode);
 					if (response.statusCode == 200)
 					{
+						var info = JSON.parse(body);
 						message.channel.send("2");
 						message.channel.send(body);
+						message.channel.send(info.object.url);
 					}
 				});
 			break;
