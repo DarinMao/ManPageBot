@@ -69,7 +69,7 @@ client.on('message', message => {
 								'User-Agent': 'DarinMao'
 							}
 						}
-						request.get(commitinforeq, function(commitinfoerror, commmitinforesponse, commitinfobody) {
+						/*request.get(commitinforeq, function(commitinfoerror, commmitinforesponse, commitinfobody) {
 							if (commitinforesponse.statusCode == 200)
 							{
 								var commitinfo = JSON.parse(commitinfobody);
@@ -94,7 +94,7 @@ client.on('message', message => {
 									}
 								});
 							}
-						});
+						});*/
 					}
 				});
 			break;
