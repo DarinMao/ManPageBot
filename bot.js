@@ -62,6 +62,7 @@ client.on('message', message => {
 					if (commitresponse.statusCode == 200)
 					{
 						var info = JSON.parse(commitbody);
+						message.channel.send(info.object.url);
 						var commitinforeq = {
 							url: info.object.url,
 							headers: {
@@ -74,6 +75,8 @@ client.on('message', message => {
 								var commitinfo = JSON.parse(commitinfobody);
 								latestCommitDate = commitInfo.commmitter.date;
 								latestCommitURL = commitInfo.html_url;
+								message.channel.send(latestCommitDate);
+								message.channel.send(latestCommitURL);
 								var versionreq = {
 									url: 'https://raw.githubusercontent.com/DarinMao/manpagediscord/master/package.json',
 									headers: {
@@ -85,6 +88,7 @@ client.on('message', message => {
 									{
 										var packageInfo = JSON.parse(versionbody);
 										version = packageInfo.version;
+										message.channel.send(version);
 										message.channel.send("```\nManPage bot v" + version + "\nA Discord bot that provides *nix manual pages\n\nUse " + process.env.PREFIX + "help to list commands```");
 										message.channel.send("Latest commmit: " + latestCommitDate + " (" + latestCommitURL + ")");
 									}
