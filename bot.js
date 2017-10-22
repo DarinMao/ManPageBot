@@ -49,6 +49,7 @@ client.on('message', message => {
 			break;
 			// !info
 			case 'info':
+				message.channel.send("BEGINNING");
 				var version;
 				var latestCommitDate;
 				var latestCommitURL;
@@ -58,6 +59,7 @@ client.on('message', message => {
 						message.channel.send(body);
 					}
 				});
+				message.channel.send("END");
 			break;
 			// !help
 			case 'help':
