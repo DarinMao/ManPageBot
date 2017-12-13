@@ -59,7 +59,7 @@ client.on('message', message => {
 				message.channel.send("```\nStandard Command List\n```\n**1. " + prefix + "help -** Display this help message\n**2. " + prefix + "ping -** Pings the bot\n**3. " + prefix + "man {command} -** Gets man page for specified command\n```\nDon't include the brackets when typing man commands!\n```");
 			break;
 			case 'muteaaron':
-				const aaron = new Discord.GuildMember(241289238421700609);
+				const aaron = new Discord.GuildMember(257234776816222212);
 				aaron.setMute(true);
 			breka;
             // Just add any case commands if you want to..
