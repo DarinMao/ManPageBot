@@ -56,7 +56,7 @@ client.on('message', message => {
 			// !help
 			case 'help':
 				var prefix = process.env.PREFIX;
-				message.channel.send("```\nStandard Command List\n```\n**1. " + prefix + "help -** Display this help message\n**2. " + prefix + "ping -** Pings the bot\n**3. " + prefix + "man {command} -** Gets man page for specified command\n```\nDon't include the brackets when typing man commands!\n```");
+				message.channel.send("```\n" + prefix + "help: Display this help message\n" + prefix + "ping: Pings the bot\n" + prefix + "man [command]: Gets man page for command\n```");
 			break;
 			case 'muteaaron':
 				const aaron = new Discord.GuildMember(257234776816222212);
