@@ -63,7 +63,4 @@ client.on('message', message => {
      }
 });
 
-client.setInterval(function() {
-	client.channels.get('371377296285761560').send("t!daily");
-}, 5000);
 client.login(process.env.BOT_TOKEN);
