@@ -58,10 +58,12 @@ client.on('message', message => {
 				var prefix = process.env.PREFIX;
 				message.channel.send("```\nStandard Command List\n```\n**1. " + prefix + "help -** Display this help message\n**2. " + prefix + "ping -** Pings the bot\n**3. " + prefix + "man {command} -** Gets man page for specified command\n```\nDon't include the brackets when typing man commands!\n```");
 			break;
+			case 'asdf':
+				client.channels.get(371377296285761560).send("TEST");
+			break;
             // Just add any case commands if you want to..
          }
      }
 });
 
 client.login(process.env.BOT_TOKEN);
-client.channels.get(371377296285761560).send("TEST");
