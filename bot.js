@@ -1,3 +1,5 @@
+/* taking bot offline
+
 const Discord = require('discord.js');
 const request = require('request');
 const client = new Discord.Client();
@@ -64,3 +66,5 @@ client.on('message', message => {
 });
 
 client.login(process.env.BOT_TOKEN);
+
+*/
