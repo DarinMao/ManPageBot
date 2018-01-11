@@ -1,13 +1,20 @@
 {
 	"name": "ManPage",
-	"description": "A Discord bot that provides *nix manual pages",
-	"version": "1.0.0",
+	"description": "A Discord bot that provides Linux manual pages",
+	"version": "3.0.0",
 	"main": "bot.js",
 	"scripts": {
 		"start": "node bot.js"
 	},
 	"dependencies": {
-		"discord.js": "11.1.0",
-		"request": "2.81.0"
+		"discord.js": "^11.1.0",
+		"express": "^4.16.2",
+		"html-entities": "^1.2.1",
+		"humanize-duration": "^3.12.0",
+		"node-persist": "^2.1.0",
+		"pug": "^2.0.0-rc.4",
+		"request": "^2.81.0",
+		"simple-node-logger": "^0.93.33",
+		"striptags": "^3.1.1"
 	}
 }
