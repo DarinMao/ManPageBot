@@ -1,0 +1,230 @@
+17:09:06.187 INFO  Bot initialized 
+17:10:15.723 INFO  Bot initialized 
+18:25:47.136 INFO  Bot initialized 
+19:03:00.601 INFO  Bot initialized 
+19:03:52.204 INFO  Bot initialized 
+19:07:27.465 INFO  Bot initialized 
+19:08:03.001 INFO  Bot initialized 
+19:11:28.718 INFO  Bot initialized 
+19:13:21.483 INFO  Bot initialized 
+19:14:04.356 INFO  Bot initialized 
+19:16:04.704 INFO  Bot initialized 
+22:55:34.047 INFO  New guild: 297859649472823297 
+11:39:54.458 INFO  Bot initialized 
+11:41:32.284 INFO  Bot initialized 
+11:42:58.569 INFO  Bot initialized 
+11:46:25.310 INFO  Bot initialized 
+11:47:55.657 INFO  Guild removed: 297859649472823297 
+11:52:00.989 INFO  Bot initialized 
+12:47:03.900 INFO  New guild: 246423401143468032 
+12:47:04.906 INFO  New guild: 393143861490483222 
+13:12:35.695 INFO  Bot initialized 
+13:13:45.023 INFO  Bot initialized 
+13:16:55.061 INFO  Bot initialized 
+13:18:48.724 INFO  Bot initialized 
+13:24:11.331 INFO  Bot initialized 
+13:27:47.061 INFO  Bot initialized 
+13:36:52.015 INFO  Bot initialized 
+13:39:05.156 INFO  Bot initialized 
+13:40:51.602 INFO  Bot initialized 
+13:46:27.666 INFO  Bot initialized 
+13:47:32.411 INFO  Bot initialized 
+13:48:40.033 INFO  Bot initialized 
+15:56:57.174 INFO  Bot initialized 
+15:58:08.564 INFO  Bot initialized 
+15:58:46.976 INFO  Bot initialized 
+15:59:19.314 INFO  Bot initialized 
+16:06:38.570 INFO  Bot initialized 
+16:14:54.358 INFO  Bot initialized 
+16:25:12.204 INFO  Bot initialized 
+16:33:23.384 INFO  Bot initialized 
+16:34:11.080 INFO  Bot initialized 
+17:45:31.525 INFO  Bot initialized 
+18:00:56.565 INFO  Bot initialized 
+18:23:07.654 INFO  Bot initialized 
+18:33:49.313 INFO  Bot initialized 
+18:33:56.270 ERROR DiscordAPIError: Missing Permissions 
+18:39:16.091 INFO  Bot initialized 
+18:39:31.148 ERROR DiscordAPIError: Missing Permissions 
+18:40:00.160 INFO  Bot initialized 
+18:49:59.596 INFO  Bot initialized 
+18:50:03.916 ERROR DiscordAPIError: Missing Permissions
+DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+18:52:39.088 INFO  Bot initialized 
+18:52:44.371 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:15:04.846 INFO  Bot initialized 
+19:33:31.511 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:33:52.157 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:35:10.226 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:35:27.324 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:40:17.748 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:41:22.718 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:41:46.108 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:46:32.682 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:51:06.363 INFO  Bot initialized 
+20:01:22.972 INFO  Bot initialized 
+21:05:51.418 INFO  Bot initialized 
+21:07:41.737 INFO  Bot initialized 
+21:11:52.065 INFO  Bot initialized 
+21:13:00.916 INFO  Bot initialized 
+21:14:24.555 INFO  Bot initialized 
+21:15:04.157 ERROR Error: ENOENT: no such file or directory, stat '/home/pi/bin/manpagediscord/change.log' 
+21:15:31.546 INFO  Bot initialized 
+16:22:28.035 INFO  Web initialized 
+16:22:30.409 INFO  Bot initialized 
+16:32:25.716 INFO  Web initialized 
+16:32:27.985 INFO  Bot initialized 
+16:44:15.866 INFO  Web initialized 
+16:44:18.041 INFO  Bot initialized 
+16:46:52.165 INFO  Web initialized 
+16:46:54.402 INFO  Bot initialized 
+16:56:39.812 INFO  Bot initialized 
+16:56:40.026 INFO  Web initialized 
+16:57:12.722 INFO  Bot initialized 
+16:57:12.936 INFO  Web initialized 
+17:03:44.808 INFO  Bot initialized 
+17:03:45.037 INFO  Web initialized 
+17:10:13.434 INFO  Bot initialized 
+17:10:13.655 INFO  Web initialized 
+17:12:13.664 INFO  Bot initialized 
+17:12:13.875 INFO  Web initialized 
+17:14:26.973 INFO  Bot initialized 
+17:14:27.193 INFO  Web initialized 
+17:15:12.496 INFO  Bot initialized 
+17:15:12.708 INFO  Web initialized 
+17:16:01.250 INFO  Guild removed: 371377296285761558 
+17:16:49.432 INFO  New guild: 371377296285761558 
+17:53:51.018 INFO  Bot initialized 
+17:53:51.229 INFO  Web initialized 
+17:55:05.764 INFO  Bot initialized 
+17:55:05.979 INFO  Web initialized 
+17:56:05.180 INFO  Bot initialized 
+17:56:05.405 INFO  Web initialized 
+17:56:57.512 INFO  Bot initialized 
+17:56:57.731 INFO  Web initialized 
+18:36:32.366 INFO  Bot initialized 
+18:36:32.583 INFO  Web initialized 
+12:29:35.953 INFO  New guild: 398528194904588309 
+12:31:15.962 INFO  Guild removed: 398528194904588309 
+19:13:32.529 INFO  New guild: 333949691962195969 
+19:14:50.497 INFO  New guild: 264445053596991498 
+19:14:51.106 INFO  Guild removed: 333949691962195969 
+19:37:55.677 INFO  New guild: 375852978311004161 
+09:57:40.090 INFO  New guild: 297859649472823297 
+15:45:39.073 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+15:45:43.936 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+15:45:56.113 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+15:46:06.392 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+15:46:51.001 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+19:29:37.028 INFO  New guild: 318061311395102723 
+19:33:24.444 INFO  Guild removed: 318061311395102723 
+01:34:47.353 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+2018-01-07 12:25:49.301 INFO  Bot initialized 
+2018-01-07 12:25:49.520 INFO  Web initialized 
+2018-01-07 12:30:11.521 INFO  Bot initialized 
+2018-01-07 12:30:11.771 INFO  Web initialized 
+2018-01-07 12:33:33.031 INFO  Bot initialized 
+2018-01-07 12:33:33.300 INFO  Web initialized 
+2018-01-07 14:50:35.099 INFO  Bot initialized 
+2018-01-07 18:02:00.929 INFO  Guild removed: Discord ManPage BOT Test (393143861490483222) 
+2018-01-08 17:37:33.046 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+2018-01-09 21:23:47.852 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+2018-01-09 21:59:29.754 INFO  New guild: test (400483409987633160) 
+2018-01-09 22:00:06.041 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+2018-01-09 22:00:13.903 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+2018-01-09 22:00:30.320 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+2018-01-09 22:00:39.401 INFO  Guild removed: test (400483409987633160) 
+2018-01-09 22:59:44.707 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
+2018-01-10 20:32:38.395 ERROR DiscordAPIError: Missing Permissions
+    at item.request.gen.end (/home/pi/bin/manpagediscord/node_modules/discord.js/src/client/rest/RequestHandlers/Sequential.js:68:65)
+    at then (/home/pi/bin/manpagediscord/node_modules/snekfetch/src/index.js:218:21)
+    at <anonymous>
+    at process._tickCallback (internal/process/next_tick.js:188:7) 
