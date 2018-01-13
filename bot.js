@@ -97,10 +97,13 @@ client.on('message', message => {
 	// if dm
 	if (message.channel instanceof Discord.DMChannel) {
 		// if from me and is dumplog
-		if (message.author.id == "288477253535399937" && message.content == "DUMPLOG") {
-			message.channel.send("Here is the log file: ", {
-				file: "./eventlog.log"
-			}).catch(catchError);
+		if (message.author.id == "288477253535399937") {
+			if (message.content == "DUMPLOG")
+			{
+				message.channel.send("Here is the log file: ", {
+					file: "./eventlog.log"
+				}).catch(catchError);
+			}
 		}
 	} else {
 		// if prefix has not yet been set, notify and set to !
@@ -111,9 +114,9 @@ client.on('message', message => {
 			storage.setItemSync(message.guild.id, '!');
 		}
 		// if prefix matches guild prefix
-		if (message.content.substring(0, 1) == storage.getItemSync(message.guild.id)) {
+		if (message.content.indexOf(storage.getItemSync(message.guild.id)) == 0) {
 			// parse
-			var args = message.content.substring(1).split(' ');
+			var args = message.content.substring(storage.getItemSync(message.guild.id).length).split(' ');
 			var cmd = args[0];
 			var arg;
 			if (args.length == 1)
@@ -186,9 +189,8 @@ client.on('message', message => {
 					{
 						message.channel.send(":negative_squared_cross_mark: Please specify a prefix!").catch(catchError);
 					} else {
-						var prefix = arg.substring(0, 1);
-						storage.setItemSync(message.guild.id, prefix);
-						message.channel.send(":white_check_mark: Set prefix for this guild to " + args[1].substring(0, 1)).catch(catchError);
+						storage.setItemSync(message.guild.id, arg);
+						message.channel.send(":white_check_mark: Set prefix for this guild to " + arg).catch(catchError);
 					}
 				break;
 				// !help
