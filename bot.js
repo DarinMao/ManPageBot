@@ -61,6 +61,11 @@ app.get('/version', function(req, res) {
 	res.send(pkg.version);
 });
 
+// set get changelog
+app.get('/changelog', function(req, res) {
+	res.sendFile(path.join(__dirname, 'ManPage_Bot_Changelog.txt'));
+});
+
 // log when discord client initialized
 client.on('ready', () => {
 	log.info('Bot initialized');
