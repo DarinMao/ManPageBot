@@ -206,7 +206,7 @@ client.on('message', message => {
 						.addField(prefix + "setprefix [prefix]", "Sets the bot command prefix for this guild (requires \"Manage Server\" permission)")
 						.addField(prefix + "man [command]", "Gets manual page for specified command")
 						.addField(prefix + "changelog", "Gets changelog for the bot")
-						.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix can only be one character. If a prefix with more than one character is specified, the first character of the specified prefix will be used.");
+						.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.");
 					message.channel.send({embed}).catch(catchError);
 				break;
 				// !changelog
