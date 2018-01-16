@@ -208,10 +208,11 @@ client.on('message', message => {
 						.setThumbnail("https://i.imgur.com/TbEDUPm.png")
 						.addField(prefix + "help", "Display this help message")
 						.addField(prefix + "ping", "Pings the bot")
+						.addField(prefix + "info", "Displays bot info")
 						.addField(prefix + "setprefix [prefix]", "Sets the bot command prefix for this guild (requires \"Manage Server\" permission)")
 						.addField(prefix + "man [command]", "Gets manual page for specified command")
 						.addField(prefix + "changelog", "Gets changelog for the bot")
-						.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.");
+						.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
 					message.channel.send({embed}).catch(catchError);
 				break;
 				// !changelog
