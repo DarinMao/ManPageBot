@@ -19,3 +19,4 @@ CHANGELOG FOR MANPAGE BOT
 
 3.0.0:	The website is officially released! There have been several backend changes and the formatting of the !info command has been changed. 
 3.1.0:	Added support for multi-character prefixes
+3.1.1:	Fixed bug where bot would not handle newlines in commands correctly

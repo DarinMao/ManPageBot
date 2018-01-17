@@ -121,7 +121,7 @@ client.on('message', message => {
 		// if prefix matches guild prefix
 		if (message.content.indexOf(storage.getItemSync(message.guild.id)) == 0) {
 			// parse
-			var args = message.content.substring(storage.getItemSync(message.guild.id).length).split(' ');
+			var args = message.content.substring(storage.getItemSync(message.guild.id).length).split(/\s+/g);
 			var cmd = args[0];
 			var arg;
 			if (args.length == 1)
