@@ -33,6 +33,9 @@ const express = require('express');
 const app = express();
 const path = require('path');
 
+// fields to include
+const includeFields = ["NAME", "SYNOPSIS", "DESCRIPTION", "USAGE", "OPTIONS"];
+
 // initialize synchronous storage
 storage.initSync();
 
@@ -144,14 +147,19 @@ client.on('message', message => {
 								if (body.indexOf("Sorry, no data found for") != -1) {
 									message.channel.send(":negative_squared_cross_mark: No manual entry for " + arg);
 								} else {
-									var raw = body.replace(/`/g, "").split("\n\n\n\n")[1].replace(/^_+\n+$/gm, "").replace(/^\n*$/gm, "").split(/\n(?=[A-Z])/);
+									var raw = body.replace(/`/g, "'");
+									raw = raw.substring(raw.indexOf("NAME"));
+									raw = raw.split("\n\n\n\n")[0];
+									raw = raw.replace(/^_+\n+$/gm, "");
+									raw = raw.replace(/^\n*$/gm, "");
+									raw = raw.split(/\n(?=[A-Z])/);
 									var embed = new Discord.RichEmbed().setColor(0x009698);
 									for (var i = 0; i < raw.length; i++) {
 										if (raw[i] == "") continue;
-										var propertyName = raw[i].split("\n      ")[0];
-										var property = raw[i].split("\n       ").slice(1).join("\n").replace(/	/g, " ");
+										var propertyName = raw[i].split(/\n +/)[0];
+										var property = raw[i].split(/\n +/).slice(1).join("\n").replace(/	/g, " ");
 										if (property.length > 1024) property = property.substring(0, 990) + "\n\n(more in full description below)";
-										embed.addField(propertyName, property);
+										if (includeFields.indexOf(propertyName) != -1) embed.addField(propertyName, property);
 									}
 									embed.addField("Full description", url);
 									message.channel.send({embed}).catch(catchError);
