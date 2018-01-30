@@ -8,13 +8,6 @@ const request = require('request');
 // store prefixes
 const storage = require('node-persist');
 
-// strip html tags from request
-const striptags = require('striptags');
-
-// evaluate html entities
-const Entities = require('html-entities').AllHtmlEntities;
-const entities = new Entities();
-
 // config file for bot token
 const config = require('./config.json');
 
@@ -144,38 +137,23 @@ client.on('message', message => {
 						message.channel.send(":negative_squared_cross_mark: Please specify a command!").catch(catchError);
 					} else {
 						arg = arg.toLowerCase();
-						var url = "https://man.cx/" + arg;
+						var url = "https://www.freebsd.org/cgi/man.cgi?manpath=Debian+8.1.0&format=ascii&query=" + arg;
 						request.get(url, function(error, response, body) {
 							if (response.statusCode == 200)
 							{
-								if (body.indexOf("NAME") == -1)
-								{
-									message.channel.send(":negative_squared_cross_mark: Couldn't find a man page for `" + arg + "`!");
+								if (body.indexOf("Sorry, no data found for") != -1) {
+									message.channel.send(":negative_squared_cross_mark: No manual entry for " + arg);
 								} else {
-									var formatted = striptags(body.replace(/<\/?b>/g, "**").replace(/<\/?i>/g, "*").replace(/\*{3}/g, "** *").replace(/&nbsp;/g, ""), '<br>');
-									var synopsis = false;
-									if (formatted.indexOf("SYNOPSIS") == -1)
-									{
-										var name = entities.decode(formatted.substring(formatted.indexOf("NAME"), formatted.indexOf("DESCRIPTION")).replace(/\r?\n|\r/g, " ").replace(/<br>/g, "\n").replace(/NAME(\*+)?\s+/, "").replace(/\*+$/, ""));
-									} else {
-										var name = entities.decode(formatted.substring(formatted.indexOf("NAME"), formatted.indexOf("SYNOPSIS")).replace(/\r?\n|\r/g, " ").replace(/<br>/g, "\n").replace(/NAME(\*+)?\s+/, "").replace(/\*+$/, ""));
-										var synopsis = entities.decode(formatted.substring(formatted.indexOf("SYNOPSIS"), formatted.indexOf("DESCRIPTION")).replace(/\r?\n|\r/g, " ").replace(/<br> /g, "\n").replace(/SYNOPSIS(\*+)?\s+/, "").replace(/\*+$/, ""));
-										if (synopsis.length > 1024) synopsis = synopsis.substring(0, 990) + "\n\n(more in full description below)";
+									var raw = body.replace(/`/g, "").split("\n\n\n\n")[1].replace(/^_+\n+$/gm, "").replace(/^\n*$/gm, "").split(/\n(?=[A-Z])/);
+									var embed = new Discord.RichEmbed().setColor(0x009698);
+									for (var i = 0; i < raw.length; i++) {
+										if (raw[i] == "") continue;
+										var propertyName = raw[i].split("\n      ")[0];
+										var property = raw[i].split("\n       ").slice(1).join("\n").replace(/	/g, " ");
+										if (property.length > 1024) property = property.substring(0, 990) + "\n\n(more in full description below)";
+										embed.addField(propertyName, property);
 									}
-									if (name.length > 1024) name = name.substring(0, 990) + "\n\n(more in full description below)";
-									if (!synopsis)
-									{
-										var embed = new Discord.RichEmbed()
-											.setColor(0x009698)
-											.addField("NAME", name)
-											.addField("Full description", "https://man.cx/" + arg);
-									} else {
-										var embed = new Discord.RichEmbed()
-											.setColor(0x009698)
-											.addField("NAME", name)
-											.addField("SYNOPSIS", synopsis)
-											.addField("Full description", "https://man.cx/" + arg);
-									}
+									embed.addField("Full description", url);
 									message.channel.send({embed}).catch(catchError);
 								}
 							} else {
