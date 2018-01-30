@@ -140,7 +140,7 @@ client.on('message', message => {
 						message.channel.send(":negative_squared_cross_mark: Please specify a command!").catch(catchError);
 					} else {
 						arg = arg.toLowerCase();
-						var url = "https://www.freebsd.org/cgi/man.cgi?manpath=Debian+8.1.0&format=ascii&query=" + arg;
+						var url = "https://www.freebsd.org/cgi/man.cgi?manpath=Debian+8.1.0&format=ascii&query=" + encodeURIComponent(arg);
 						request.get(url, function(error, response, body) {
 							if (response.statusCode == 200)
 							{

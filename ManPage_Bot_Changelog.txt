@@ -23,3 +23,4 @@ CHANGELOG FOR MANPAGE BOT
 
 4.0.0:	Instead of man.cx, the bot now uses FreeBSD Debian manual pages. Man pages should be more detailed and there should be less bugs.
 4.0.1:	Fixed parsing bug.
+4.0.2:	Fixed special character bug.
