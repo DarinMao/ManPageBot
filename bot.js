@@ -144,7 +144,7 @@ client.on('message', message => {
 						request.get(url, function(error, response, body) {
 							if (response.statusCode == 200)
 							{
-								if (body.indexOf("Sorry, no data found for") != -1) {
+								if (body.indexOf("Sorry, no data found for") != -1 || body.indexOf("Empty input") != -1) {
 									message.channel.send(":negative_squared_cross_mark: No manual entry for " + arg);
 								} else {
 									var raw = body.replace(/`/g, "'");
