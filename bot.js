@@ -46,17 +46,6 @@ app.set('view engine', 'pug');
 // set public folder
 app.use(express.static(path.join(__dirname, 'public')));
 
-// set app get data
-app.get('/guilds', function(req, res) {
-	res.send(client.guilds.size.toString());
-});
-app.get('/uptime', function(req, res) {
-	res.send(format(process.uptime() * 1000));
-});
-app.get('/version', function(req, res) {
-	res.send(pkg.version);
-});
-
 // set get changelog
 app.get('/changelog', function(req, res) {
 	res.sendFile(path.join(__dirname, 'ManPage_Bot_Changelog.txt'));
