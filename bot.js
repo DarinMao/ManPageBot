@@ -36,6 +36,9 @@ const path = require('path');
 // fields to include
 const includeFields = ["NAME", "SYNOPSIS", "DESCRIPTION", "USAGE", "OPTIONS"];
 
+// global message variable
+var globalMessage;
+
 // initialize synchronous storage
 storage.initSync();
 
@@ -84,6 +87,7 @@ client.on('guildDelete', guild => {
 
 // detect commands
 client.on('message', message => {
+	globalMessage = message;
 	// if dm
 	if (message.channel instanceof Discord.DMChannel) {
 		// if from me and is dumplog
@@ -123,7 +127,7 @@ client.on('message', message => {
 				case 'ping':
 					var ping = Math.round(client.ping);
 					message.channel.send('Pong! `' + ping + ' ms`').catch(function(e) {
-						catchError(e, "Send ping success; channel \"" + this.name + "\" in guild \"" + this.guild.name + "\" (" + this.guild.id + ")");
+						catchError(e, "Send ping success; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalglobalMessage.guild.id + ")");
 					});
 				break;
 				// !man
@@ -131,7 +135,7 @@ client.on('message', message => {
 					if (arg == false)
 					{
 						message.channel.send(":negative_squared_cross_mark: Please specify a command!").catch(function(e) {
-							catchError(e, "Send no command specified error message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+							catchError(e, "Send no command specified error message; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 						});
 					} else {
 						arg = arg.toLowerCase();
@@ -158,12 +162,12 @@ client.on('message', message => {
 									}
 									embed.addField("Full description", url);
 									message.channel.send({embed}).catch(function(e) {
-										catchError(e, "Send man page; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+										catchError(e, "Send man page; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 									});
 								}
 							} else {
 								message.channel.send(":negative_squared_cross_mark: Error " + response.statusCode + ": " + error).catch(function(e) {
-									catchError(e, "Send HTTP request error message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+									catchError(e, "Send HTTP request error message; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 								});
 							}
 						});
@@ -173,19 +177,19 @@ client.on('message', message => {
 				case 'setprefix':
 					if (!message.member.hasPermission("MANAGE_GUILD") && message.author.id !== "288477253535399937") {
 						message.channel.send(":negative_squared_cross_mark: You are not allowed to do that!").catch(function(e) {
-							catchError(e, "Send user permissions error message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+							catchError(e, "Send user permissions error message; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 						});
 						return;
 					}
 					if (arg == false)
 					{
 						message.channel.send(":negative_squared_cross_mark: Please specify a prefix!").catch(function(e) {
-							catchError(e, "Send no prefix specified error message; hannel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+							catchError(e, "Send no prefix specified error message; hannel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 						});
 					} else {
 						storage.setItemSync(message.guild.id, arg);
 						message.channel.send(":white_check_mark: Set prefix for this guild to " + arg).catch(function(e) {
-							catchError(e, "Send setprefix success; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+							catchError(e, "Send setprefix success; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 						});
 					}
 				break;
@@ -205,7 +209,7 @@ client.on('message', message => {
 						.addField(prefix + "changelog", "Gets changelog for the bot")
 						.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
 					message.channel.send({embed}).catch(function(e) {
-						catchError(e, "Send help message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+						catchError(e, "Send help message; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 					});
 				break;
 				// !changelog
@@ -213,7 +217,7 @@ client.on('message', message => {
 					message.channel.send("Here is the changelog file: ", {
 						file: "./ManPage_Bot_Changelog.txt"
 					}).catch(function(e) {
-						catchError(e, "Send changelog; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+						catchError(e, "Send changelog; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 					});
 				break;
 				// !info
@@ -234,7 +238,7 @@ client.on('message', message => {
 						.addField("Version", version, true)
 						.addField("Uptime", uptime);
 					message.channel.send({embed}).catch(function(e) {
-						catchError(e, "Send info message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+						catchError(e, "Send info message; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 					});
 				break;
 				// Just add any case commands if you want to..
@@ -278,5 +282,5 @@ function catchError(e, message) {
 
 process.on('unhandledRejection', (reason) => {
 	log.error(reason);
-	logToDm(reason);
+	logToDm(reason.toString());
 });
