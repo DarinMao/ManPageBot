@@ -123,7 +123,7 @@ client.on('message', message => {
 				case 'ping':
 					var ping = Math.round(client.ping);
 					message.channel.send('Pong! `' + ping + ' ms`').catch(function(e) {
-						catchError(e, "Send ping success; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+						catchError(e, "Send ping success; channel \"" + this.name + "\" in guild \"" + this.guild.name + "\" (" + this.guild.id + ")");
 					});
 				break;
 				// !man
