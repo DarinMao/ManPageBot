@@ -275,3 +275,8 @@ function catchError(e, message) {
 	log.error(e.stack);
 	logToDm(e.name + ": " + e.message + " (Check logs for trace)\n```Additional information:\n" + message + "```");
 }
+
+process.on('unhandledRejection', (reason) => {
+	log.error(reason);
+	logToDm(reason);
+});
