@@ -92,7 +92,9 @@ client.on('message', message => {
 			{
 				message.channel.send("Here is the log file: ", {
 					file: "./eventlog.log"
-				}).catch(catchError);
+				}).catch(function(e) {
+					catchError(e, "DM Dump Log");
+				});
 			}
 		}
 	} else {
@@ -120,13 +122,17 @@ client.on('message', message => {
 				// !ping
 				case 'ping':
 					var ping = Math.round(client.ping);
-					message.channel.send('Pong! `' + ping + ' ms`').catch(catchError);
+					message.channel.send('Pong! `' + ping + ' ms`').catch(function(e) {
+						catchError(e, "Send ping success; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+					});
 				break;
 				// !man
 				case 'man':
 					if (arg == false)
 					{
-						message.channel.send(":negative_squared_cross_mark: Please specify a command!").catch(catchError);
+						message.channel.send(":negative_squared_cross_mark: Please specify a command!").catch(function(e) {
+							catchError(e, "Send no command specified error message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+						});
 					} else {
 						arg = arg.toLowerCase();
 						var url = "https://www.freebsd.org/cgi/man.cgi?manpath=Debian+8.1.0&format=ascii&query=" + encodeURIComponent(arg);
@@ -151,10 +157,14 @@ client.on('message', message => {
 										if (includeFields.indexOf(propertyName) != -1) embed.addField(propertyName, property);
 									}
 									embed.addField("Full description", url);
-									message.channel.send({embed}).catch(catchError);
+									message.channel.send({embed}).catch(function(e) {
+										catchError(e, "Send man page; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+									});
 								}
 							} else {
-								message.channel.send(":negative_squared_cross_mark: Error " + response.statusCode + ": " + error).catch(catchError);
+								message.channel.send(":negative_squared_cross_mark: Error " + response.statusCode + ": " + error).catch(function(e) {
+									catchError(e, "Send HTTP request error message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+								});
 							}
 						});
 					}
@@ -162,15 +172,21 @@ client.on('message', message => {
 				// !setprefix
 				case 'setprefix':
 					if (!message.member.hasPermission("MANAGE_GUILD") && message.author.id !== "288477253535399937") {
-						message.channel.send(":negative_squared_cross_mark: You are not allowed to do that!").catch(catchError);
+						message.channel.send(":negative_squared_cross_mark: You are not allowed to do that!").catch(function(e) {
+							catchError(e, "Send user permissions error message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+						});
 						return;
 					}
 					if (arg == false)
 					{
-						message.channel.send(":negative_squared_cross_mark: Please specify a prefix!").catch(catchError);
+						message.channel.send(":negative_squared_cross_mark: Please specify a prefix!").catch(function(e) {
+							catchError(e, "Send no prefix specified error message; hannel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+						});
 					} else {
 						storage.setItemSync(message.guild.id, arg);
-						message.channel.send(":white_check_mark: Set prefix for this guild to " + arg).catch(catchError);
+						message.channel.send(":white_check_mark: Set prefix for this guild to " + arg).catch(function(e) {
+							catchError(e, "Send setprefix success; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+						});
 					}
 				break;
 				// !help
@@ -188,13 +204,17 @@ client.on('message', message => {
 						.addField(prefix + "man [command]", "Gets manual page for specified command")
 						.addField(prefix + "changelog", "Gets changelog for the bot")
 						.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
-					message.channel.send({embed}).catch(catchError);
+					message.channel.send({embed}).catch(function(e) {
+						catchError(e, "Send help message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+					});
 				break;
 				// !changelog
 				case 'changelog':
 					message.channel.send("Here is the changelog file: ", {
 						file: "./ManPage_Bot_Changelog.txt"
-					}).catch(catchError);
+					}).catch(function(e) {
+						catchError(e, "Send changelog; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+					});
 				break;
 				// !info
 				case 'info':
@@ -213,7 +233,9 @@ client.on('message', message => {
 						.addField("Guilds", guilds, true)
 						.addField("Version", version, true)
 						.addField("Uptime", uptime);
-					message.channel.send({embed}).catch(catchError);
+					message.channel.send({embed}).catch(function(e) {
+						catchError(e, "Send info message; channel \"" + message.channel.name + "\" in guild \"" + message.guild.name + "\" (" + messsage.guild.id + ")");
+					});
 				break;
 				// Just add any case commands if you want to..
 			 }
@@ -228,7 +250,9 @@ client.login(config.token).then(function() {
 		log.info('Web initialized');
 		logToDm('Web initialized');
 	});
-}).catch(catchError);
+}).catch(function(e) {
+	catchError(e, "Failed to initialize bot");
+});
 
 // sets the playing status to number of guilds
 function setServersStatus() {
@@ -245,6 +269,9 @@ function logToDm(messageToLog) {
 
 // catches all errors and logs them
 function catchError(e) {
+	catchError(e, "none provided");
+}
+function catchError(e, message) {
 	log.error(e.stack);
-	logToDm(e.name + ": " + e.message + " (Check logs for trace)");
+	logToDm(e.name + ": " + e.message + " (Check logs for trace)\n```Additional information:\n" + message + "```");
 }
