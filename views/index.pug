@@ -1,52 +1,52 @@
 doctype html
 html
 	head
+		meta(name='viewport' content='width=device-width, initial-scale=1')
 		title ManPage Bot
 		link(rel='stylesheet' href='/css/bootstrap.min.css')
 		link(rel='stylesheet' href='/css/style.css')
 		link(rel='shortcut icon' href='/favicon.ico' type='image/x-icon')
 	body
-		nav.navbar.navbar-toggleable-md.navbar-inverse.fixed-top.bg-inverse
-			button.navbar-toggler.navbar-toggler-right.collapsed(type='button' data-toggle='collapse' data-target='#navbar' aria-controls='navbar' aria-expanded='false' aria-label='Toggle navigation')
-				span.navbar-toggler-icon
+		nav.navbar.navbar-expand-md.navbar-dark.fixed-top
 			span.navbar-brand
-				img#logo(src='/img/manpage.png' width="40")
+				img#logo(src='/img/manpage.png')
 				| ManPage Bot
+			button.navbar-toggler(type='button' data-toggle='collapse' data-target='#navbar' aria-controls='navbar' aria-expanded='false' aria-label='Toggle navigation')
+				span.navbar-toggler-icon
 			div.navbar-collapse.collapse#navbar(aria-expanded='false')
 				ul.navbar-nav.mr-auto
 					li.nav-item.active
 						a.nav-link(href='https://discordapp.com/oauth2/authorize?client_id=371357658009305101&scope=bot&permissions=52224') Invite ManPage Bot
 					li.nav-item
 						a.nav-link(href='https://discord.gg/hU3wMfQ') Join ManPage Discord
-		div.jumbotron
+		main(role='main')
+			div.jumbotron
+				div.container
+					h1.display-3 ManPage Bot
+					p.jumbotron-text ManPage Bot is a Discord bot that fetches Linux manual pages. 
+					p
+						a.btn.btn-primary.btn-lg(href='https://discordapp.com/oauth2/authorize?client_id=371357658009305101&scope=bot&permissions=52224' role='button') Invite ManPage Bot
 			div.container
-				h1.display-3 ManPage Bot
-				p.jumbotron-text ManPage Bot is a Discord bot that fetches Linux manual pages. 
-				p
-					a.btn.btn-primary.btn-lg(href='https://discordapp.com/oauth2/authorize?client_id=371357658009305101&scope=bot&permissions=52224' role='button') Invite ManPage Bot
-				
-			
-		div.container
-			div.row
-				div.col-md-6
-					h4 Uptime
-					div.row
-						div.col-md-9
-							p#uptime #{uptime}
-						div.col-md-3
-							a(href='http://stats.pingdom.com/aku4e4t1a0y8/4203009') Status
-				div.col-md-3
-					h4 Guilds
-					p#guilds #{guilds}
-				div.col-md-3
-					h4 Version
-					div.row
-						div.col-md-3
-							p#version #{version}
-						div.col-md-9
-							a(href='/changelog') Changelog
+				div.row
+					div.col-md-6
+						h4 Uptime
+						div.row
+							div.col-md-9
+								p#uptime #{uptime}
+							div.col-md-3
+								a(href='http://stats.pingdom.com/aku4e4t1a0y8/4203009') Status
+					div.col-md-3
+						h4 Guilds
+						p#guilds #{guilds}
+					div.col-md-3
+						h4 Version
+						div.row
+							div.col-md-3
+								p#version #{version}
+							div.col-md-9
+								a(href='/changelog') Changelog
 			hr
-			footer
-				p @Ailuropoda Melanoleuca#0068
+		footer.container
+			p @Ailuropoda Melanoleuca#0068
 		script(src='/js/jquery-3.2.1.min.js')
 		script(src='/js/bootstrap.min.js')

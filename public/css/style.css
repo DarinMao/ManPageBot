@@ -1,10 +1,10 @@
 body {
 	background-color: #36393e;
+	padding-top: 4.125rem;
 }
 
 div.jumbotron {
 	background-color: #32393b;
-	margin-top: 32px;
 }
 
 h1, h4 {
@@ -20,5 +20,14 @@ p.jumbotron-text {
 }
 
 img#logo {
-	margin-right: 15px;
+	margin-right: 1rem;
+	width: 2.5rem;
+}
+
+.navbar {
+	background-color: inherit;
+}
+
+.row {
+	padding-bottom: 15px;
 }
