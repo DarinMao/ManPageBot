@@ -23,15 +23,10 @@ const pkg = require('./package.json');
 // duration formatter
 const humanizeDuration = require('humanize-duration');
 const format = humanizeDuration.humanizer({
-	conjunction: ' and ',
+	conjunction: 'and ',
 	serialComma: false,
 	round: true
 });
-
-// express for web server
-const express = require('express');
-const app = express();
-const path = require('path');
 
 // fields to include
 const includeFields = ["NAME", "SYNOPSIS", "DESCRIPTION", "USAGE", "OPTIONS"];
@@ -42,30 +37,10 @@ var globalMessage;
 // initialize synchronous storage
 storage.initSync();
 
-// load express view engine
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
-
-// set public folder
-app.use(express.static(path.join(__dirname, 'public')));
-
-// set get changelog
-app.get('/changelog', function(req, res) {
-	res.sendFile(path.join(__dirname, 'ManPage_Bot_Changelog.txt'));
-});
-
 // log when discord client initialized
 client.on('ready', () => {
 	log.info('Bot initialized');
 	logToDm('Bot initialized');
-	// set app get root
-	app.get('/', function(req, res) {
-		res.render('index', {
-			guilds: client.guilds.size,
-			uptime: format(process.uptime() * 1000),
-			version: pkg.version
-		});
-	});
 	setServersStatus();
 });
 
@@ -206,13 +181,14 @@ client.on('message', message => {
 						.addField(prefix + "info", "Displays bot info")
 						.addField(prefix + "setprefix [prefix]", "Sets the bot command prefix for this guild (requires \"Manage Server\" permission)")
 						.addField(prefix + "man [command]", "Gets manual page for specified command")
-						.addField(prefix + "changelog", "Gets changelog for the bot")
+//						.addField(prefix + "changelog", "Gets changelog for the bot")
 						.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
 					message.channel.send({embed}).catch(function(e) {
 						catchError(e, "Send help message; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 					});
 				break;
 				// !changelog
+				/*
 				case 'changelog':
 					message.channel.send("Here is the changelog file: ", {
 						file: "./ManPage_Bot_Changelog.txt"
@@ -220,6 +196,7 @@ client.on('message', message => {
 						catchError(e, "Send changelog; channel \"" + globalMessage.channel.name + "\" in guild \"" + globalMessage.guild.name + "\" (" + globalMessage.guild.id + ")");
 					});
 				break;
+				*/
 				// !info
 				case 'info':
 					var prefix = storage.getItemSync(message.guild.id);
@@ -248,13 +225,7 @@ client.on('message', message => {
 })
 
 // start bot
-client.login(config.token).then(function() {
-	// start web server
-	app.listen(8080, function() {
-		log.info('Web initialized');
-		logToDm('Web initialized');
-	});
-}).catch(function(e) {
+client.login(config.token).catch(function(e) {
 	catchError(e, "Failed to initialize bot");
 });
 
