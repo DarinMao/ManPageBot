@@ -125,9 +125,9 @@ client.on('message', message => {
 				// !ping
 				case 'ping':
 					var APILatency = Math.round(client.ping);
-					const m = message.channel.send("Pong!\nAPI Latency: " + APILatency).then(m => {
+					const m = message.channel.send("Pong!\nAPI Latency: `" + APILatency + " ms`").then(m => {
 						var RTLatency = m.createdTimestamp - message.createdTimestamp;
-						m.edit("Pong!\nAPI Latency: " + APILatency + "\nMessage RTT: " + RTLatency);
+						m.edit("Pong!\nAPI Latency: `" + APILatency + " ms`\nMessage RTT: `" + RTLatency + " ms`");
 					});
 					console.log("Executed command 'ping'");
 					logExec(message);
