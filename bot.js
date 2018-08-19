@@ -97,9 +97,10 @@ client.on('message', message => {
 				// !ping
 				case 'ping':
 					var APILatency = Math.round(client.ping);
-					const m = await message.channel.send("Pong!\nAPI Latency: " + APILatency);
-					var RTLatency = m.createdTimestamp - message.createdTimestamp;
-					m.edit("Pong!\nAPI Latency: " + APILatency + "\nMessage RTT: " + RTLatency);
+					const m = message.channel.send("Pong!\nAPI Latency: " + APILatency).then(m => {
+						var RTLatency = m.createdTimestamp - message.createdTimestamp;
+						m.edit("Pong!\nAPI Latency: " + APILatency + "\nMessage RTT: " + RTLatency);
+					});
 				break;
 				// !man
 				case 'man':
