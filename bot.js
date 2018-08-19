@@ -31,11 +31,35 @@ const format = humanizeDuration.humanizer({
 // fields to include
 const includeFields = ["NAME", "SYNOPSIS", "DESCRIPTION", "USAGE", "OPTIONS"];
 
-// initialize synchronous storage
-storage.initSync();
+var prefixes = [];
+(async () => {
+	// initialize storage
+	await storage.init();
+
+	// load all prefixes
+	let keys = await storage.keys();
+	for (i = 0; i < keys.length; i++) {
+		prefixes[keys[i]] = await storage.getItem(keys[i]);
+	}
+	console.log(prefixes);
+	console.log("Loaded " + keys.length + " prefixes");
+})();
+
+// prefix handling
+
+async function saveGuild(guild) {
+	await storage.setItem(guild.id, '!');
+	console.log("Guild saved: " + guild.id);
+}
+
+async function delGuild(guild) {
+	await storage.removeItem(guild.id);
+	console.log("Guild deleted: " + guild.id);
+}
 
 // log when discord client initialized
 client.on('ready', () => {
+	console.log("Bot initialized");
 	log.info('Bot initialized');
 	logToDm('Bot initialized');
 	setServersStatus();
@@ -45,7 +69,8 @@ client.on('ready', () => {
 client.on('guildCreate', guild => {
 	log.info('New guild: ' + guild.name + ' (' + guild.id + ')');
 	logToDm('New guild: ' + guild.name + ' (' + guild.id + ')');
-	storage.setItemSync(guild.id, '!');
+	prefixes[guild.id] = '!';
+	saveGuild(guild);
 	setServersStatus();
 });
 
@@ -53,7 +78,8 @@ client.on('guildCreate', guild => {
 client.on('guildDelete', guild => {
 	log.info('Guild removed: ' + guild.name + ' (' + guild.id + ')');
 	logToDm('Guild removed: ' + guild.name + ' (' + guild.id + ')');
-	storage.removeItemSync(guild.id);
+	delete prefixes[guild.id];
+	delGuild(guild)
 	setServersStatus();
 });
 
@@ -69,21 +95,23 @@ client.on('message', message => {
 			{
 				message.channel.send("Here is the log file: ", {
 					file: "./eventlog.log"
-				})
+				});
+				console.log("Sent log to owner");
 			}
 		}
 	} else {
 		// if prefix has not yet been set, notify and set to !
-		if (storage.getItemSync(message.guild.id) == undefined)
+		if (prefixes[message.guild.id] == undefined)
 		{
-			log.info('New guild: ' + guild.name + ' (' + guild.id + ')');
-			logToDm('New guild: ' + guild.name + ' (' + guild.id + ')');
-			storage.setItemSync(message.guild.id, '!');
+			log.info('New guild: ' + message.guild.name + ' (' + message.guild.id + ')');
+			logToDm('New guild: ' + message.guild.name + ' (' + message.guild.id + ')');
+			prefixes[message.guild.id] = '!';
+			saveGuild(message.guild);
 		}
 		// if prefix matches guild prefix
-		if (message.content.indexOf(storage.getItemSync(message.guild.id)) == 0) {
+		if (message.content.indexOf(prefixes[message.guild.id]) == 0) {
 			// parse
-			var args = message.content.substring(storage.getItemSync(message.guild.id).length).split(/\s+/g);
+			var args = message.content.substring(prefixes[message.guild.id].length).split(/\s+/g);
 			var cmd = args[0];
 			var arg;
 			if (args.length == 1)
@@ -101,12 +129,16 @@ client.on('message', message => {
 						var RTLatency = m.createdTimestamp - message.createdTimestamp;
 						m.edit("Pong!\nAPI Latency: " + APILatency + "\nMessage RTT: " + RTLatency);
 					});
+					console.log("Executed command 'ping'");
+					logExec(message);
 				break;
 				// !man
 				case 'man':
 					if (arg == false)
 					{
 						message.channel.send(":negative_squared_cross_mark: Please specify a command!");
+						console.log("Executed command 'man' with no command");
+						logExec(message);
 					} else {
 						arg = arg.toLowerCase();
 						var url = "https://www.freebsd.org/cgi/man.cgi?manpath=Debian+8.1.0&format=ascii&query=" + encodeURIComponent(arg);
@@ -137,25 +169,34 @@ client.on('message', message => {
 								message.channel.send(":negative_squared_cross_mark: Error " + response.statusCode + ": " + error);
 							}
 						});
+						console.log("Executed command 'man' with '" + arg + "'");
+						logExec(message);
 					}
 				break;
 				// !setprefix
 				case 'setprefix':
 					if (!message.member.hasPermission("MANAGE_GUILD") && message.author.id !== "288477253535399937") {
 						message.channel.send(":negative_squared_cross_mark: You are not allowed to do that!");
+						console.log("Executed command 'setprefix' without permissions");
+						logExec(message);
 						return;
 					}
 					if (arg == false)
 					{
 						message.channel.send(":negative_squared_cross_mark: Please specify a prefix!");
+						console.log("Executed command 'setprefix' with permissions with no prefix");
+						logExec(message);
 					} else {
-						storage.setItemSync(message.guild.id, arg);
+						prefixes[message.guild.id] = arg;
+						saveGuild(message.guild);
 						message.channel.send(":white_check_mark: Set prefix for this guild to " + arg);
+						console.log("Executed command 'setprefix' with permissions with '" + arg + "'");
+						logExec(message);
 					}
 				break;
 				// !help
 				case 'help':
-					var prefix = storage.getItemSync(message.guild.id);
+					var prefix = prefixes[message.guild.id];
 					var embed = new Discord.RichEmbed()
 						.setTitle("ManPage Bot Command List")
 						.setDescription("This bot provides manual pages for Linux commands\n```This guild's prefix is currently set to: \"" + prefix + "\"```")
@@ -168,10 +209,12 @@ client.on('message', message => {
 						.addField(prefix + "man [command]", "Gets manual page for specified command")
 						.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
 					message.channel.send({embed});
+					console.log("Executed command 'help'");
+					logExec(message);
 				break;
 				// !info
 				case 'info':
-					var prefix = storage.getItemSync(message.guild.id);
+					var prefix = prefixes[message.guild.id];
 					var guilds = client.guilds.size;
 					var uptime = format(process.uptime() * 1000);
 					var version = pkg.version;
@@ -187,6 +230,8 @@ client.on('message', message => {
 						.addField("Version", version, true)
 						.addField("Uptime", uptime);
 					message.channel.send({embed});
+					console.log("Executed command 'info'");
+					logExec(message);
 				break;
 				// Just add any case commands if you want to..
 			 }
@@ -210,7 +255,12 @@ function logToDm(messageToLog) {
 		.then(user => {user.send(messageToLog)});
 }
 
+function logExec(message) {
+	console.log("Guild " + message.guild.id + " by user " + message.author.id);
+}
+
 process.on('unhandledRejection', (reason) => {
+	console.log(reason);
 	log.error(reason.stack || reason);
 	logToDm(reason.toString());
 });
