@@ -23,8 +23,8 @@ const pkg = require('./package.json');
 // duration formatter
 const humanizeDuration = require('humanize-duration');
 const format = humanizeDuration.humanizer({
-	conjunction: 'and ',
-	serialComma: false,
+	conjunction: ' and ',
+	serialComma: true,
 	round: true
 });
 
