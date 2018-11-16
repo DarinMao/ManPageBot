@@ -1,0 +1,5 @@
+config.json
+start.sh
+node_modules/
+.node-persist/
+package-lock.json
