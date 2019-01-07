@@ -29,7 +29,7 @@ const format = humanizeDuration.humanizer({
 });
 
 // fields to include
-const includeFields = ["NAME", "SYNOPSIS", "DESCRIPTION", "USAGE", "OPTIONS"];
+const includeFields = ["NAME", "SYNOPSIS", "DESCRIPTION", "USAGE", "OPTIONS", "PARAMETERS"];
 
 var prefixes = [];
 (async () => {
@@ -80,6 +80,7 @@ client.on('guildDelete', guild => {
 
 // sends man page
 function sendManPage(channel, manInput) {
+    channel.startTyping();
     var url = "https://www.freebsd.org/cgi/man.cgi?manpath=Debian+8.1.0&format=ascii&query=" + encodeURIComponent(manInput);
 	request.get(url, function(error, response, body) {
 		if (response.statusCode == 200)
@@ -107,6 +108,7 @@ function sendManPage(channel, manInput) {
 		} else {
 			channel.send(":negative_squared_cross_mark: Error " + response.statusCode + ": " + error);
 		}
+		channel.stopTyping();
 	});
 	if (dev) console.log("Executed command 'man' with '" + manInput + "' in channel " + message.channel.id + " by " + message.author.id);
 }
@@ -163,8 +165,8 @@ client.on('message', message => {
 				} else {
 					prefixes[message.guild.id] = args[0];
 					saveGuild(message.guild, args[0]);
-					message.channel.send(":white_check_mark: Set prefix for this guild to " + arg[0]);
-					if (dev) console.log("Executed command 'setprefix' with permissions with '" + arg + "' in channel " + message.channel.id + " by " + message.author.id);
+					message.channel.send(":white_check_mark: Set prefix for this guild to " + args[0]);
+					if (dev) console.log("Executed command 'setprefix' with permissions with '" + arg[0] + "' in channel " + message.channel.id + " by " + message.author.id);
 				}
 			break;
 			// !help
@@ -194,7 +196,7 @@ client.on('message', message => {
 					.setTitle("ManPage Bot")
 					.setDescription("This bot provides manual pages for Linux commands\nUse `" + prefix + "help` to view commands\n[Add ManPage Bot to your own server](https://discordapp.com/oauth2/authorize?client_id=371357658009305101&scope=bot&permissions=52224)\n[Join the ManPage Bot Discord server](https://discord.gg/hU3wMfQ)\n[Check out ManPage Bot on Discord Bot List](https://discordbots.org/bot/371357658009305101)")
 					.setColor(0x009698)
-					.setURL("http://manpagebot.tk/")
+					.setURL("http://manpagebot.ml")
 					.setFooter("Ailuropoda Melanoleuca#0068 | Written using the discord.js node.js module", "https://i.imgur.com/tymDoDZ.jpg")
 					.setThumbnail("https://i.imgur.com/TbEDUPm.png")
 					.addField("Prefix", prefix, true)
