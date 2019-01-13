@@ -115,99 +115,100 @@ function sendManPage(channel, manInput) {
 
 // detect commands
 client.on('message', message => {
-	// ignore bad messages
-	if (message.author.bot || message.content.indexOf(prefixes[message.guild.id]) !== 0 || message.channel instanceof Discord.DMChannel) return;
 	// if prefix has not yet been set, notify and set to !
 	if (prefixes[message.guild.id] == undefined)
 	{
 		prefixes[message.guild.id] = "!";
 		saveGuild(message.guild, "!");
 	}
-	// if prefix matches guild prefix
-	if (message.content.indexOf(prefixes[message.guild.id]) == 0) {
-		// parse
-		var args = message.content.substring(prefixes[message.guild.id].length).split(/\s+/g);
-		var cmd = args.shift().toLowerCase();
-		// which command?
-		switch(cmd) {
-			// !ping
-			case 'ping':
-				var APILatency = Math.round(client.ping);
-				const m = message.channel.send("Pong!\nAPI Latency: `" + APILatency + " ms`").then(m => {
-					var RTLatency = m.createdTimestamp - message.createdTimestamp;
-					m.edit("Pong!\nAPI Latency: `" + APILatency + " ms`\nMessage RTT: `" + RTLatency + " ms`");
-				});
-				if (dev) console.log("Executed command 'ping' in channel " + message.channel.id + " by " + message.author.id);
-			break;
-			// !man
-			case 'man':
-			    // get argument
-				var arg = args.shift();
-				if (arg !== undefined) {
-				    // call send man page
-				    sendManPage(message.channel, arg);
-				} else {
-				    message.channel.send(":negative_squared_cross_mark: Please specify a command!");
-				    if (dev) console.log("Executed command 'man' with no argument in channel " + message.channel.id + " by " + message.author.id);
-				}
-			break;
-			// !setprefix
-			case 'setprefix':
-				if (!message.member.hasPermission("MANAGE_GUILD") && message.author.id !== "288477253535399937") {
-					message.channel.send(":negative_squared_cross_mark: You are not allowed to do that!");
-					if (dev) console.log("Executed command 'setprefix' without permissions in channel " + message.channel.id + " by " + message.author.id);
-					return;
-				}
-				if (args[0] == undefined)
-				{
-					message.channel.send(":negative_squared_cross_mark: Please specify a prefix!");
-					if (dev) console.log("Executed command 'setprefix' with permissions with no prefix in channel " + message.channel.id + " by " + message.author.id);
-				} else {
-					prefixes[message.guild.id] = args[0];
-					saveGuild(message.guild, args[0]);
-					message.channel.send(":white_check_mark: Set prefix for this guild to " + args[0]);
-					if (dev) console.log("Executed command 'setprefix' with permissions with '" + arg[0] + "' in channel " + message.channel.id + " by " + message.author.id);
-				}
-			break;
-			// !help
-			case 'help':
-				var prefix = prefixes[message.guild.id];
-				var embed = new Discord.RichEmbed()
-					.setTitle("ManPage Bot Command List")
-					.setDescription("This bot provides manual pages for Linux commands\n```This guild's prefix is currently set to: \"" + prefix + "\"```")
-					.setColor(0x009698)
-					.setThumbnail("https://i.imgur.com/TbEDUPm.png")
-					.addField(prefix + "help", "Display this help message")
-					.addField(prefix + "ping", "Pings the bot")
-					.addField(prefix + "info", "Displays bot info")
-					.addField(prefix + "setprefix *prefix*", "Sets the bot command prefix for this guild (requires \"Manage Server\" permission)")
-					.addField(prefix + "man *command*", "Gets manual page for specified command")
-					.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
-				message.channel.send({embed});
-				if (dev) console.log("Executed command 'help' in channel " + message.channel.id + " by " + message.author.id);
-			break;
-			// !info
-			case 'info':
-				var prefix = prefixes[message.guild.id];
-				var guilds = client.guilds.size;
-				var uptime = format(process.uptime() * 1000);
-				var version = pkg.version;
-				var embed = new Discord.RichEmbed()
-					.setTitle("ManPage Bot")
-					.setDescription("This bot provides manual pages for Linux commands\nUse `" + prefix + "help` to view commands\n[Add ManPage Bot to your own server](https://discordapp.com/oauth2/authorize?client_id=371357658009305101&scope=bot&permissions=52224)\n[Join the ManPage Bot Discord server](https://discord.gg/hU3wMfQ)\n[Check out ManPage Bot on Discord Bot List](https://discordbots.org/bot/371357658009305101)")
-					.setColor(0x009698)
-					.setURL("http://manpagebot.ml")
-					.setFooter("Ailuropoda Melanoleuca#0068 | Written using the discord.js node.js module", "https://i.imgur.com/tymDoDZ.jpg")
-					.setThumbnail("https://i.imgur.com/TbEDUPm.png")
-					.addField("Prefix", prefix, true)
-					.addField("Guilds", guilds, true)
-					.addField("Version", version, true)
-					.addField("Uptime", uptime);
-				message.channel.send({embed});
-				if (dev) console.log("Executed command 'info' in channel " + message.channel.id + " by " + message.author.id);
-			break;
-			// Just add any case commands if you want to..
-		}
+	// ignore messages if:
+	//  they are from a bot
+	//  it does not start with the prefix or mention
+	//  it is from a DM channel
+    if (message.author.bot || (message.content.indexOf(prefixes[message.guild.id]) !== 0 && !message.isMentioned(client.user.id)) || message.channel instanceof Discord.DMChannel) return;
+    
+    // get array of arguments and command
+    var args = message.content.toLowerCase().replace(prefixes[message.guild.id], "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
+    var command = args.shift();
+	// which command?
+	switch(command) {
+		// !ping
+		case 'ping':
+			var APILatency = Math.round(client.ping);
+			const m = message.channel.send("Pong!\nAPI Latency: `" + APILatency + " ms`").then(m => {
+				var RTLatency = m.createdTimestamp - message.createdTimestamp;
+				m.edit("Pong!\nAPI Latency: `" + APILatency + " ms`\nMessage RTT: `" + RTLatency + " ms`");
+			});
+			if (dev) console.log("Executed command 'ping' in channel " + message.channel.id + " by " + message.author.id);
+		break;
+		// !man
+		case 'man':
+		    // get argument
+			var arg = args.shift();
+			if (arg !== undefined) {
+			    // call send man page
+			    sendManPage(message.channel, arg);
+			} else {
+			    message.channel.send(":negative_squared_cross_mark: Please specify a command!");
+			    if (dev) console.log("Executed command 'man' with no argument in channel " + message.channel.id + " by " + message.author.id);
+			}
+		break;
+		// !setprefix
+		case 'setprefix':
+			if (!message.member.hasPermission("MANAGE_GUILD") && message.author.id !== "288477253535399937") {
+				message.channel.send(":negative_squared_cross_mark: You are not allowed to do that!");
+				if (dev) console.log("Executed command 'setprefix' without permissions in channel " + message.channel.id + " by " + message.author.id);
+				return;
+			}
+			if (args[0] == undefined)
+			{
+				message.channel.send(":negative_squared_cross_mark: Please specify a prefix!");
+				if (dev) console.log("Executed command 'setprefix' with permissions with no prefix in channel " + message.channel.id + " by " + message.author.id);
+			} else {
+				prefixes[message.guild.id] = args[0];
+				saveGuild(message.guild, args[0]);
+				message.channel.send(":white_check_mark: Set prefix for this guild to " + args[0]);
+				if (dev) console.log("Executed command 'setprefix' with permissions with '" + arg[0] + "' in channel " + message.channel.id + " by " + message.author.id);
+			}
+		break;
+		// !help
+		case 'help':
+			var prefix = prefixes[message.guild.id];
+			var embed = new Discord.RichEmbed()
+				.setTitle("ManPage Bot Command List")
+				.setDescription("This bot provides manual pages for Linux commands\n```This guild's prefix is currently set to: \"" + prefix + "\"```")
+				.setColor(0x009698)
+				.setThumbnail("https://i.imgur.com/TbEDUPm.png")
+				.addField(prefix + "help", "Display this help message")
+				.addField(prefix + "ping", "Pings the bot")
+				.addField(prefix + "info", "Displays bot info")
+				.addField(prefix + "setprefix *prefix*", "Sets the bot command prefix for this guild (requires \"Manage Server\" permission)")
+				.addField(prefix + "man *command*", "Gets manual page for specified command")
+				.addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
+			message.channel.send({embed});
+			if (dev) console.log("Executed command 'help' in channel " + message.channel.id + " by " + message.author.id);
+		break;
+		// !info
+		case 'info':
+			var prefix = prefixes[message.guild.id];
+			var guilds = client.guilds.size;
+			var uptime = format(process.uptime() * 1000);
+			var version = pkg.version;
+			var embed = new Discord.RichEmbed()
+				.setTitle("ManPage Bot")
+				.setDescription("This bot provides manual pages for Linux commands\nUse `" + prefix + "help` to view commands\n[Add ManPage Bot to your own server](https://discordapp.com/oauth2/authorize?client_id=371357658009305101&scope=bot&permissions=52224)\n[Join the ManPage Bot Discord server](https://discord.gg/hU3wMfQ)\n[Check out ManPage Bot on Discord Bot List](https://discordbots.org/bot/371357658009305101)")
+				.setColor(0x009698)
+				.setURL("https://manpagebot.ml")
+				.setFooter("Ailuropoda Melanoleuca#0068 | Written using the discord.js node.js module", "https://i.imgur.com/tymDoDZ.jpg")
+				.setThumbnail("https://i.imgur.com/TbEDUPm.png")
+				.addField("Prefix", prefix, true)
+				.addField("Guilds", guilds, true)
+				.addField("Version", version, true)
+				.addField("Uptime", uptime);
+			message.channel.send({embed});
+			if (dev) console.log("Executed command 'info' in channel " + message.channel.id + " by " + message.author.id);
+		break;
+		// Just add any case commands if you want to..
 	}
 });
 
