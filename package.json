@@ -1,18 +1,19 @@
 {
   "name": "ManPage",
   "description": "A Discord bot that provides Linux manual pages",
-  "version": "5.3.1",
+  "version": "6.0.0",
   "main": "bot.js",
   "scripts": {
-    "start": "node bot.js",
-    "debug": "NODE_ENV=dev node bot.js"
+    "start": "node index.js",
+    "debug": "NODE_ENV=dev node index.js"
   },
   "dependencies": {
-    "discord.js": "^11.3.0",
-    "humanize-duration": "^3.12.1",
-    "node-persist": "^2.1.0",
+    "discord.js": "^11.5.1",
+    "humanize-duration": "^3.18.0",
+    "node-persist": "^3.0.4",
     "path": "^0.12.7",
-    "request": "^2.83.0",
+    "request": "^2.88.0",
+    "simple-node-logger": "^18.12.22",
     "snekfetch": "^4.0.4"
   }
 }
