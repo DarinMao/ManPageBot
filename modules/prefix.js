@@ -1,32 +1,31 @@
 const storage = require("node-persist");
 
-function Prefix() {
-  this.prefixes = {};
-}
+const prefixes = [];
 
-Prefix.prototype.init = async function() {
+const init = async function() {
   await storage.init();
-  let keys = await storage.keys();
+  const keys = await storage.keys();
   for (let i = 0; i < keys.length; i++) {
-    this.prefixes[keys[i]] = await storage.getItem(keys[i]);
+    prefixes[keys[i]] = await storage.getItem(keys[i]);
   }
+  return prefixes;
 }
 
-Prefix.prototype.get = function(id) {
-  if (id in this.prefixes) {
-    return this.prefixes[id];
+const get = function(id) {
+  if (id in prefixes) {
+    return prefixes[id];
   }
   return null;
 }
 
-Prefix.prototype.set = async function(id, prefix) {
-  this.prefixes[id] = prefix;
-  await storage.setItem(id, prefix);
+const set = async function(id, prefix) {
+  prefixes[id] = prefix;
+  return storage.setItem(id, prefix);
 }
 
-Prefix.prototype.remove = async function(id) {
-  delete this.prefixes[id];
-  await storage.removeItem(id);
+const remove = async function(id) {
+  delete prefixes[id];
+  return storage.removeItem(id);
 }
 
-module.exports = Prefix;
+module.exports = {init, get, set, remove};

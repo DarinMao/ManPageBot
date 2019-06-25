@@ -3,8 +3,7 @@ const Discord = require("discord.js");
 const client = new Discord.Client();
 
 // prefixes
-const Prefix = require("./modules/prefix.js");
-const prefix = new Prefix();
+const prefix = require("./modules/prefix.js");
 
 // config file for bot token
 const config = require("./config.json");
@@ -77,43 +76,6 @@ client.on('guildDelete', guild => {
 	prefix.remove(guild.id);
 });
 
-/*
-// sends man page OBSOLETE WE WILL BE REPLACING JUST FOR REFERENCE
-function sendManPage(channel, manInput) {
-    channel.startTyping();
-    var url = "https://www.freebsd.org/cgi/man.cgi?manpath=Debian+8.1.0&format=ascii&query=" + encodeURIComponent(manInput);
-	request.get(url, function(error, response, body) {
-		if (response.statusCode == 200)
-		{
-			if (body.indexOf("Sorry, no data found for") != -1 || body.indexOf("Empty input") != -1) {
-				channel.send(":negative_squared_cross_mark: No manual entry for " + manInput);
-			} else {
-				var raw = body.replace(/`/g, "'");
-				raw = raw.substring(raw.indexOf("NAME"));
-				raw = raw.split("\n\n\n\n")[0];
-				raw = raw.replace(/^_+\n+$/gm, "");
-				raw = raw.replace(/^\n*$/gm, "");
-				raw = raw.split(/\n(?=[A-Z])/);
-				var embed = new Discord.RichEmbed().setColor(0x009698);
-				for (var i = 0; i < raw.length; i++) {
-					if (raw[i] == "") continue;
-					var propertyName = raw[i].split(/\n +/)[0];
-					var property = raw[i].split(/\n +/).slice(1).join("\n").replace(/	/g, " ");
-					if (property.length > 1024) property = property.substring(0, 990) + "\n\n(more in full description below)";
-					if (includeFields.indexOf(propertyName) != -1) embed.addField(propertyName, property);
-				}
-				embed.addField("Full description", url);
-				channel.send({embed});
-			}
-		} else {
-			channel.send(":negative_squared_cross_mark: Error " + response.statusCode + ": " + error);
-		}
-		channel.stopTyping();
-	});
-	if (dev) console.log("Executed command 'man' with '" + manInput + "' in channel " + message.channel.id + " by " + message.author.id);
-}
-*/
-
 // detect commands
 client.on("message", message => {
   // set unset prefix
@@ -142,7 +104,7 @@ client.on("message", message => {
         return;
       }
     }
-    modules[command].execute({prefix, command, args, message, client});
+    modules[command].execute(prefix, command, args, message, client);
     log.debug(`Executed message ${message.id} command ${command} args ${args}`);
   }
 });
