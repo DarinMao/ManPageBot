@@ -19,15 +19,15 @@ const resolveDistro = function(distro) {
       return distros[i];
     }
   }
-  return null;
+  return undefined;
 }
 
 const execute = async function(prefix, command, args, message, client) {
   await message.channel.startTyping();
   // parse args
-  let distro = "";
-  let section = 0;
-  let name = "";
+  let distro;
+  let section;
+  let name;
   if (args.length < 1) { // reject things that have invalid # of arguments
     return message.channel.send(":negative_squared_cross_mark: What manual page do you want?");
   }
@@ -36,8 +36,8 @@ const execute = async function(prefix, command, args, message, client) {
     if ((arg = parseInt(args[0])) == parseFloat(args[0])
         && (arg >= 1 && arg <= 9)) { // it is a valid section # (integer between 1 and 9)
       section = args.shift();
-    } else if (resolveDistro(args[0]) != null) { // it is a valid distro
-      distro = resolveDistro(args.shift());
+    } else if (typeof (distro = resolveDistro(args[0])) !== "undefined") { // it is a valid distro
+      args.shift();
     } else { // it's the command and also the last arg
       name = args.shift();
       break;
@@ -46,11 +46,11 @@ const execute = async function(prefix, command, args, message, client) {
 
   // build URL
   let url = "/";
-  if (distro != "") {
+  if (typeof distro !== "undefined") {
     url += "man/" + distro + "/";
   }
   url += name;
-  if (section != 0) {
+  if (typeof section !== "undefined") {
     url += "." + section;
   }
 
@@ -74,10 +74,10 @@ const execute = async function(prefix, command, args, message, client) {
   }
   const data = parser.parse(res.data, {pre: true});
   const manText = data.querySelector("pre").innerHTML.split("\n");
-  const header = manText[0].split(/ {2,}/);
-  name = header[0].split("(")[0];
-  section = header[0].match(/(?<=\()[1-9][a-z]*(?=\))/g);
-  const sectionName = header[1];
+  const fullHeader = manText[0].split(/ {2,}/);
+  name = fullHeader[0].split("(")[0];
+  section = fullHeader[0].match(/(?<=\()[1-9][a-z]*(?=\))/g);
+  const header = fullHeader[1];
   const os = distro;
   const sections = {};
   let sectionHead = "";
@@ -92,8 +92,9 @@ const execute = async function(prefix, command, args, message, client) {
         sectionContents = "";
       }
       sectionHead = manText[i].replace(/<[^>]+>/ig,"");
-    } else { // add line to text
+    } else if (manText[i].startsWith(" ")){ // add line to text
       sectionContents += manText[i]
+          .replace(/></g, "> <") // split tags apart
           .replace(/<\/?b[^>]*>/ig, "**") // bold
           .replace(/<\/?i[^>]*>/ig, "*") // italic
           .replace(/<\/?a[^>]*>/ig, ""); // remove links
@@ -102,7 +103,7 @@ const execute = async function(prefix, command, args, message, client) {
   }
   sections[sectionHead] = sectionContents;
   url = res.request.res.responseUrl;
-  const man = {name, section, sectionName, os, url, sections};
+  const man = {name, section, header, os, url, sections};
 
   await message.channel.stopTyping();
   const embed = render(man, fields);

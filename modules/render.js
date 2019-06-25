@@ -3,13 +3,13 @@ const Discord = require("discord.js");
 const render = function(man, include) {
   let title = man.name;
   if (man.section > 0) {
-    title += `(${man.section})\t${man.sectionName}`;
+    title += `(${man.section})\t${man.header}`;
   }
   const embed = new Discord.RichEmbed()
     .setTitle(title)
     .setColor(0x009698)
     .setURL(man.url);
-  if (man.os != "") {
+  if (man.os != null) {
     embed.setDescription(man.os);
   }
   for (let i = 0; i < include.length; i++) {
