@@ -21,11 +21,15 @@ const request = require('request');
 */
 
 // modules
+const ping = require("./modules/commands/ping.js");
+const setprefix = require("./modules/commands/setprefix.js");
+const help = require("./modules/commands/help.js");
+const info = require("./modules/commands/info.js");
 const modules = {
-  "ping": require("./modules/commands/ping.js"),
-  "setprefix": require("./modules/commands/setprefix.js"),
-  "help": require("./modules/commands/help.js"),
-  "info": require("./modules/commands/info.js")
+  "ping": ping,
+  "setprefix": setprefix,
+  "help": help,
+  "info": info
 }
 
 // log when discord client initialized
@@ -39,7 +43,7 @@ client.on('ready', () => {
 
 // status messages
 let statusIndex = 0;
-function updateStatus() {
+const updateStatus = () => {
     if (statusIndex == 0) {
     	let gameString = client.guilds.size + " guild";
     	if (client.guilds.size != 1) gameString += "s";
@@ -63,7 +67,7 @@ function updateStatus() {
 
 // set prefix and notify when guild is added
 client.on('guildCreate', guild => {
-	prefix.set(guild.id, "$");
+	prefix.set(guild.id, config.prefix);
 });
 
 // remove prefix and notify when guild is removed
@@ -112,7 +116,7 @@ function sendManPage(channel, manInput) {
 client.on("message", message => {
   // set unset prefix
   if (prefix.get(message.guild.id) == null) {
-    prefix.set(message.guild.id, "$");
+    prefix.set(message.guild.id, config.prefix);
     log.debug(`Set unset prefix for ${message.guild.id}`);
   }
   // ignore bad messages
@@ -136,7 +140,7 @@ client.on("message", message => {
         return;
       }
     }
-    modules[command].execute(prefix, command, args, message, client);
+    modules[command].execute({prefix, command, args, message, client});
     log.debug(`Executed message ${message.id} command ${command} args ${args}`);
   }
 });
