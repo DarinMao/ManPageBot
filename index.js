@@ -25,11 +25,13 @@ const ping = require("./modules/commands/ping.js");
 const setprefix = require("./modules/commands/setprefix.js");
 const help = require("./modules/commands/help.js");
 const info = require("./modules/commands/info.js");
+const man = require("./modules/commands/man.js")
 const modules = {
   "ping": ping,
   "setprefix": setprefix,
   "help": help,
-  "info": info
+  "info": info,
+  "man": man
 }
 
 // log when discord client initialized

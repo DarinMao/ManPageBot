@@ -1,6 +1,6 @@
 const execute = async function(context) {
   const APILatency = Math.round(context.client.ping);
-  const m = await context.message.channel.send("Pong!\nAPI Latency: `" + APILatency + " ms`")
+  const m = await context.message.channel.send("Pong!\nAPI Latency: `" + APILatency + " ms`");
   const RTLatency = m.createdTimestamp - context.message.createdTimestamp;
   m.edit("Pong!\nAPI Latency: `" + APILatency + " ms`\nMessage RTT: `" + RTLatency + " ms`");
 }
