@@ -23,7 +23,7 @@ const execute = async function(context) {
     .addField("Guilds", guilds, true)
     .addField("Version", version, true)
     .addField("Uptime", uptime);
-  context.message.channel.send({embed});
+  return context.message.channel.send({embed});
 }
 
 const permission = ["SEND_MESSAGES"];

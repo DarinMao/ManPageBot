@@ -13,7 +13,7 @@ const execute = async function(context) {
     .addField(prefix + "setprefix *prefix*", "Sets the bot command prefix for this guild (requires \"Manage Server\" permission)")
     .addField(prefix + "man *command*", "Gets manual page for specified command")
     .addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
-  context.message.channel.send({embed});
+  return context.message.channel.send({embed});
 }
 
 const permission = ["SEND_MESSAGES"];
