@@ -8,10 +8,6 @@ const prefix = require("./modules/prefix.js");
 // config file for bot token
 const config = require("./config.json");
 
-//axios and parser for distro updates
-const axios = require("axios");
-const parser = require("node-html-parser");
-
 // log
 const log = require("simple-node-logger").createSimpleLogger();
 if (process.env.NODE_ENV == "dev") {
@@ -46,24 +42,6 @@ client.on('ready', () => {
 	}, 10000);
 });
 
-//function for updating distro list
-async function updatedDistros(){
-  const distributions = new Array();
-  const manpage = await axios.get("https://manned.org");
-  const distroHTMLList = parser.parse(manpage.data).querySelector('#systems').innerHTML; //This part is split up for readability
-  const distroList = parser.parse(distroHTMLList).querySelectorAll('a');
-  for(let i = 0; i < distroList.length; i++){
-      let distroName = distroList[i].attributes.href;
-      if(distroName != "#"){ //href for more links
-        distroName = distroName.match(/[^/]+$/g); //get substr of href after the last slash
-        distributions.push(distroName[0]);
-      }
-  }
-  return distributions;
-}
-updatedDistros().then(distroRun => {
-  //I don't know how to handle this in order to pass it to man.js
-}).catch(err => console.error(err));
 // status messages
 let statusIndex = 0;
 const updateStatus = () => {
