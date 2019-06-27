@@ -112,16 +112,16 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   let sectionContents = "";
   let fields = 0;
   for (let i = 1; i < manText.length; i++) {
+    if (fields >= 3) {
+      this._log.debug("Field limit reached");
+      break;
+    }
     if (manText[i].startsWith("<a href=\"#head")) { // new section
       if (sectionHead != "") { // if not empty, save
         if (!exclude.has(sectionHead)){
           this._log.debug("Adding " + sectionHead);
           sections[sectionHead] = sectionContents;
           fields++;
-        }
-        if (fields >= 5) {
-          this._log.debug("Stopping because five fields added");
-          break;
         }
       }
       sectionContents = "";
@@ -141,7 +141,6 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
       fields++;
     }
   }
-  sections[sectionHead] = sectionContents;
   url = res.request.res.responseUrl;
   const man = {name, section, header, os, url, sections};
 
