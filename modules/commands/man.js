@@ -3,30 +3,56 @@ const axios = require("axios");
 const manned = axios.create({
   baseURL: "https://manned.org/"
 });
-
-const mainIndex = require("../../index.js");
 const parser = require("node-html-parser");
 const schedule = require("node-schedule");
 const render = require("../render.js");
-//console.log(mainIndex.updateDistros());
-// get list of all distros currently on manned.org.  Currently just using a static list, but a dynamic approach should be implemented
-let distros = [];
-const resolveDistro = function(distro) {
-  for (let i = 0; i < distros.length; i++) {
-    if (distros[i] == distro || distros[i].split("-")[0] == distro) {
-      return distros[i];
+
+// fields to exclude
+const exclude = new Set(["AUTHOR", "REPORTING BUGS", "COPYRIGHT", "SEE ALSO"]);
+
+const Man = function(log) {
+  this._log = log;
+  this._distros = [];
+  this._updateDistros();
+  const job = schedule.scheduleJob("0 0 * * 0", async () => {this._updateDistros()});
+}
+
+Man.prototype._resolveDistro = function(distro) {
+  for (let i = 0; i < this._distros.length; i++) {
+    if (this._distros[i] == distro || this._distros[i].split("-")[0] == distro) {
+      return this._distros[i];
     }
   }
   return undefined;
 }
 
-const execute = async function(prefix, command, args, message, client) {
+Man.prototype._updateDistros = async function (){
+  const distributions = [];
+  const manpage = await manned.get("/");
+  this._log.debug("Retrieved Linux distribution list");
+  const distroHTMLList = parser.parse(manpage.data).querySelector("#systems").innerHTML; // this part is split up for readability
+  const distroList = parser.parse(distroHTMLList).querySelectorAll("a");
+  for (let i = 0; i < distroList.length; i++){
+    let distroName = distroList[i].attributes.href;
+    if (distroName != "#"){ // href for more links
+      distroName = distroName.match(/[^/]+$/g); // get substr of href after the last slash
+      distributions.push(distroName[0]);
+      this._log.debug("Found distribution " + distroName[0]);
+    }
+  }
+  this._distros = distributions;
+  this._log.info("Updated Linux distribution list");
+  return distributions;
+}
+
+Man.prototype.execute = async function(prefix, command, args, message, client) {
   await message.channel.startTyping();
   // parse args
   let distro;
   let section;
   let name;
   if (args.length < 1) { // reject things that have invalid # of arguments
+    this._log.debug("Rejecting man command with no arguments");
     return message.channel.send(":negative_squared_cross_mark: What manual page do you want?");
   }
   let arg = 0;
@@ -35,7 +61,7 @@ const execute = async function(prefix, command, args, message, client) {
       if ((arg = parseInt(args[0])) == parseFloat(args[0])
           && (arg >= 1 && arg <= 9)) { // it is a valid section # (integer between 1 and 9)
         section = args.shift();
-      } else if (typeof (distro = resolveDistro(args[0])) !== "undefined") { // it is a valid distro
+      } else if (typeof (distro = this._resolveDistro(args[0])) !== "undefined") { // it is a valid distro
         args.shift();
       }
    } else { // it's the command and also the last arg
@@ -53,6 +79,7 @@ const execute = async function(prefix, command, args, message, client) {
   if (typeof section !== "undefined") {
     url += "." + section;
   }
+  this._log.debug("Built URL is " + url);
 
   // fetch and parse the man page
   let res;
@@ -60,8 +87,9 @@ const execute = async function(prefix, command, args, message, client) {
     res = await manned.get(url);
   } catch (error) {
     if (error.request.res.statusCode == 404) {
+      this._log.debug("Man page returned 404");
       let msg = ":negative_squared_cross_mark: No manual entry for " + name;
-      if (section != 0) {
+      if (typeof section !== "undefined") {
         msg += " in section " + section;
       }
       await message.channel.stopTyping();
@@ -82,24 +110,22 @@ const execute = async function(prefix, command, args, message, client) {
   const sections = {};
   let sectionHead = "";
   let sectionContents = "";
-  const fields = [];
+  let fields = 0;
   for (let i = 1; i < manText.length; i++) {
-    if (manText[i] == "") { // skip the empty lines
-      continue;
-    }
     if (manText[i].startsWith("<a href=\"#head")) { // new section
       if (sectionHead != "") { // if not empty, save
-        if(sectionHead == "DESCRIPTION"){ //only get first paragraph of description
-          sections[sectionHead] = sectionContents.split('.\n')[0].replace('\n','') + "."; //split it at periods with a new line and remove any existing newlines.  Add the period back.
-        } else {
+        if (!exclude.has(sectionHead)){
+          this._log.debug("Adding " + sectionHead);
           sections[sectionHead] = sectionContents;
+          fields++;
         }
-        sectionContents = "";
+        if (fields >= 5) {
+          this._log.debug("Stopping because five fields added");
+          break;
+        }
       }
+      sectionContents = "";
       sectionHead = manText[i].replace(/<[^>]+>/ig,"");
-      if(fields.length < 5 && sectionHead != "AUTHOR" && sectionHead != "REPORTING BUGS" && sectionHead != "COPYRIGHT" && sectionHead != "SEE ALSO"){
-        fields.push(sectionHead);
-      }
     } else if (manText[i].startsWith(" ")){ // add line to text
       sectionContents += manText[i]
           .replace(/></g, "> <") // split tags apart
@@ -107,6 +133,12 @@ const execute = async function(prefix, command, args, message, client) {
           .replace(/<\/?i[^>]*>/ig, "*") // italic
           .replace(/<\/?a[^>]*>/ig, ""); // remove links
       sectionContents += "\n";
+    } else if (manText[i] == "" && sectionHead == "DESCRIPTION") {
+      this._log.debug("Adding DESCRIPTION");
+      sections[sectionHead] = sectionContents;
+      sectionHead = "";
+      sectionContents = "";
+      fields++;
     }
   }
   sections[sectionHead] = sectionContents;
@@ -114,36 +146,11 @@ const execute = async function(prefix, command, args, message, client) {
   const man = {name, section, header, os, url, sections};
 
   await message.channel.stopTyping();
-  const embed = render(man, fields);
+  const embed = render(man);
+  this._log.debug(`Sending man page ${man.name}(${man.section}) in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
 }
 
-const permission = ["SEND_MESSAGES"];
+Man.prototype.permission = ["SEND_MESSAGES"];
 
-module.exports = {execute, permission};
-
-//scheduling periodic updates to the list
-const j = schedule.scheduleJob('0 0 * * 0', updateDistros().then(distroRun => {
-  console.log("distro list updated");
-  updateDistrosValue(distroRun);
-}));
-
-//function for updating distro list
-async function updateDistros(){
-  const distributions = new Array();
-  const manpage = await axios.get("https://manned.org");
-  const distroHTMLList = parser.parse(manpage.data).querySelector('#systems').innerHTML; //This part is split up for readability
-  const distroList = parser.parse(distroHTMLList).querySelectorAll('a');
-  for(let i = 0; i < distroList.length; i++){
-      let distroName = distroList[i].attributes.href;
-      if(distroName != "#"){ //href for more links
-        distroName = distroName.match(/[^/]+$/g); //get substr of href after the last slash
-        distributions.push(distroName[0]);
-      }
-  }
-  return distributions;
-}
-
-function updateDistrosValue(arr){
-  distros = arr;
-}
+module.exports = Man;

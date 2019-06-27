@@ -1,6 +1,10 @@
 const Discord = require("discord.js");
 
-const execute = async function(prefix, command, args, message, client) {
+const Help = function(log) {
+  this._log = log;
+}
+
+Help.prototype.execute = async function(prefix, command, args, message, client) {
   const p = prefix.get(message.guild.id);
   const embed = new Discord.RichEmbed()
     .setTitle("ManPage Bot Command List")
@@ -13,9 +17,10 @@ const execute = async function(prefix, command, args, message, client) {
     .addField(p + "setprefix *prefix*", "Sets the bot command prefix for this guild (requires \"Manage Server\" permission)")
     .addField(p + "man *command*", "Gets manual page for specified command")
     .addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
+  this._log.debug(`Sending help message in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
 }
 
-const permission = ["SEND_MESSAGES"];
+Help.prototype.permission = ["SEND_MESSAGES"];
 
-module.exports = {execute, permission};
+module.exports = Help;

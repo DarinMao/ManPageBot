@@ -4,6 +4,7 @@ const client = new Discord.Client();
 
 // prefixes
 const prefix = require("./modules/prefix.js");
+prefix.init();
 
 // config file for bot token
 const config = require("./config.json");
@@ -14,23 +15,23 @@ if (process.env.NODE_ENV == "dev") {
     log.setLevel("debug");
 }
 
-/*
-// http request
-const request = require('request');
-*/
+// log all errors and continue
+process.on('unhandledRejection', (reason) => {
+	log.error(reason);
+});
 
 // modules
-const ping = require("./modules/commands/ping.js");
-const setprefix = require("./modules/commands/setprefix.js");
-const help = require("./modules/commands/help.js");
-const info = require("./modules/commands/info.js");
-const man = require("./modules/commands/man.js")
+const Ping = require("./modules/commands/ping.js");
+const SetPrefix = require("./modules/commands/setprefix.js")
+const Help = require("./modules/commands/help.js")
+const Info = require("./modules/commands/info.js")
+const Man = require("./modules/commands/man.js")
 const modules = {
-  "ping": ping,
-  "setprefix": setprefix,
-  "help": help,
-  "info": info,
-  "man": man
+  "ping": new Ping(log),
+  "setprefix": new SetPrefix(log),
+  "help": new Help(log),
+  "info": new Info(log),
+  "man": new Man(log)
 }
 
 // log when discord client initialized
@@ -69,11 +70,13 @@ const updateStatus = () => {
 // set prefix and notify when guild is added
 client.on('guildCreate', guild => {
 	prefix.set(guild.id, config.prefix);
+  log.debug("New guild " + guild.id);
 });
 
 // remove prefix and notify when guild is removed
 client.on('guildDelete', guild => {
 	prefix.remove(guild.id);
+  log.debug("Guild removed " + guild.id);
 });
 
 // detect commands
@@ -104,18 +107,10 @@ client.on("message", message => {
         return;
       }
     }
+    log.debug(`Executing message ${message.id} command ${command} args ${args}`);
     modules[command].execute(prefix, command, args, message, client);
-    log.debug(`Executed message ${message.id} command ${command} args ${args}`);
   }
 });
 
-// init prefix
-prefix.init();
-
 // start bot
 client.login(config.token);
-
-// errors
-process.on('unhandledRejection', (reason) => {
-	log.error(reason);
-});

@@ -7,7 +7,11 @@ const format = humanizeDuration.humanizer({
 	round: true
 });
 
-const execute = async function(prefix, command, args, message, client) {
+const Info = function(log) {
+  this._log = log;
+}
+
+Info.prototype.execute = async function(prefix, command, args, message, client) {
   const p = prefix.get(message.guild.id);
   const guilds = client.guilds.size;
   const uptime = format(process.uptime() * 1000);
@@ -23,9 +27,10 @@ const execute = async function(prefix, command, args, message, client) {
     .addField("Guilds", guilds, true)
     .addField("Version", version, true)
     .addField("Uptime", uptime);
+	this._log.debug(`Sending info message in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
 }
 
-const permission = ["SEND_MESSAGES"];
+Info.prototype.permission = ["SEND_MESSAGES"];
 
-module.exports = {execute, permission};
+module.exports = Info;
