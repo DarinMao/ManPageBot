@@ -26,12 +26,14 @@ const SetPrefix = require("./modules/commands/setprefix.js")
 const Help = require("./modules/commands/help.js")
 const Info = require("./modules/commands/info.js")
 const Man = require("./modules/commands/man.js")
+const WinMan = require("./modules/commands/winman.js");
 const modules = {
   "ping": new Ping(log),
   "setprefix": new SetPrefix(log),
   "help": new Help(log),
   "info": new Info(log),
-  "man": new Man(log)
+  "man": new Man(log),
+  "winman": new WinMan(log)
 }
 
 // log when discord client initialized
