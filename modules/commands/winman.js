@@ -1,10 +1,9 @@
 const Discord = require("discord.js");
 const axios = require("axios");
 const windowsMan = axios.create({
-  baseURL: "https://docs.microsoft.com/en-us/"
+  baseURL: "https://api.github.com/search/code?q=filename:"
 });
 
-const parser = require("node-html-parser");
 const render = require("../render.js");
 
 const WinMan = function(log){
@@ -23,41 +22,107 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     }
     winCommand += args[i];
   }
-  let cmdurl = "/windows-server/administration/windows-commands/" + winCommand;
-  let powershellurl = "/powershell/module/" + winCommand;
+  winCommand = winCommand.replace('|',''); //get rid of the '|' character that exists in some command names, but is not part of the file name
+  const winUrls = [winCommand + "+repo:MicrosoftDocs/windowsserverdocs",
+  winCommand + "+repo:MicrosoftDocs/PowerShell-Docs",
+  winCommand + "+repo:MicrosoftDocs/windows-powershell-docs",
+  winCommand + "+repo:MicrosoftDocs/azure-docs-powershell"];
+  let successfulConnection = false;
+  let indx = 0;
+  let searchResults;
   let res;
-  let successfulConnection;
+  while(!successfulConnection && indx < winUrls.length){
+    try{
+      res = await windowsMan.get(winUrls[indx]);
+    } catch(error) {
+      console.log(error);
+      return message.channel.send("error fetching page!");
+    }
+    searchResults = res.data;
+    successfulConnection = searchResults.total_count > 0 && searchResults.items[0].name.toLowerCase() == winCommand.toLowerCase() + ".md";
+    indx++;
+  }
+  if(!successfulConnection){
+    return message.channel.send(":negative_squared_cross_mark: No manual entry for " + winCommand);
+  }
+  //important vars
+  let name;
+  const sections = {};
+  let sectionHead = "";
+  let sectionContents = "";
+  let url = "https://github.com";
+  const header = "Windows Documentation";
+  const section = "0";
+  const os = ""
+  let fields = 0;
+  let fieldLimit = 4;
+  let prevLineWasTable = false; //used to see if table setup is needed
+  let tableBlockLength;
   try{
-    res = await windowsMan.get(cmdurl);
-    successfulConnection = true;
+    res = await axios.get(searchResults.items[0].url);
+    searchResults = res.data;
+    res = await axios.get(searchResults.download_url);
+    const urlSplit = searchResults.download_url.substring(34).split('/');
+    for(let i = 0; i < urlSplit.length; i++){
+      url += "/" + urlSplit[i];
+      if(i == 1){
+        url += "/blob";
+      }
+    }
+    searchResults = res.data;
   } catch(error) {
-    successfulConnection = false;
+    return message.channel.send("error fetching page!");
   }
-  if(!successfulConnection){ //very unfinished because this needs to look through github to actually find the command
-    try{
-      res = await windowsMan.get(powershellurl);
-      successfulConnection = true;
-    } catch(error){
-      if(error.request.res.statusCode == 404){
-
-      }
+  const manPageLines = searchResults.split("\n");
+  for(let i = 0; i < manPageLines.length; i++){
+    if(fields >= fieldLimit){
+      break; //limit reached
     }
-  }
-  if(!successfulConnection){ //there is an _1 in the name of the page (happens for cacls).  Least likely to occur, so it's last
-    try{
-      res = await windowsMan.get(cmdurl+"_1");
-    } catch(error){
-      if(error.request.res.statusCode == 404){
-        return message.channel.send(":negative_squared_cross_mark: No manual entry for " + winCommand);
+    if(manPageLines[i] == ""){//skip blank lines
+      continue;
+    }
+    if(manPageLines[i].charAt(0) == "#"){ //header
+      if(manPageLines[i].charAt(1) != "#"){ //title
+        name = manPageLines[i].substring(2).replace(/[\r\r]+/g, "");
+      }
+      if(sectionHead != "" && sectionContents.replace(/[\r\r]+/g, "") != ""){ //save
+        sections[sectionHead] = sectionContents;
+        fields++;
+      }
+      if(fields == 0){
+        sectionHead = "Synopsis";
       } else {
-        return message.channel.send("generic error fetching manpage occurred.");
+        sectionHead = manPageLines[i].replace(/#/g,"");
       }
+      sectionContents = "";
+    }
+    else if(sectionHead != "") {
+      const unmodifiedManpageLine = manPageLines[i];
+      manPageLines[i] = manPageLines[i].replace("> ", ""); // for the lines beginning with "> "
+      if(manPageLines[i] == "[!CAUTION]"){
+        manPageLines[i] == "*CAUTION!*";
+      } else if(manPageLines[i].charAt(0) == "|"){
+        const tableSplits = manPageLines[i].split("|");
+        manPageLines[i] = "";
+        if(!prevLineWasTable){
+          tableBlockLength = tableSplits[1].length + 5;
+        }
+        for(let j = 1; j < tableSplits.length; j++){
+          while(tableSplits[j].length < tableBlockLength){
+            tableSplits[j] += " ";
+          }
+          manPageLines[i]+= tableSplits[j];
+        }
+        manPageLines[i]+= " \n ";
+      }
+      prevLineWasTable = unmodifiedManpageLine.charAt(0) == "|";
+      sectionContents += manPageLines[i];
     }
   }
-  const data = parser.parse(res.data.replace("<!-- <content> -->", "<content>").replace("<!-- </content> -->","</content>")); //parse data with the comments around the content tags removed.  makes searching for manpage elements faster
-  const name = data.querySelector("h1").innerHTML;
-  const manpageContent = data.querySelector("content").innerHTML.split("\n");
-  console.log(manpageContent[2]);
+  await message.channel.stopTyping();
+  const winman = {name, section, header, os, url, sections};
+  const embed = render(winman);
+  return message.channel.send({embed});
 }
 
 WinMan.prototype.permission = ["SEND_MESSAGES"];

@@ -112,7 +112,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   let sectionContents = "";
   let fields = 0;
   for (let i = 1; i < manText.length; i++) {
-    if (fields >= 3) {
+    if (fields >= 4) { // this is 3 excluding name
       this._log.debug("Field limit reached");
       break;
     }
@@ -143,7 +143,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   }
   url = res.request.res.responseUrl;
   const man = {name, section, header, os, url, sections};
-
+  console.log(header);
   await message.channel.stopTyping();
   const embed = render(man);
   this._log.debug(`Sending man page ${man.name}(${man.section}) in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
