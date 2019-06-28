@@ -10,11 +10,14 @@ const render = require("../render.js");
 // fields to exclude
 const exclude = new Set(["AUTHOR", "REPORTING BUGS", "COPYRIGHT", "SEE ALSO"]);
 
+// field limit
+const fieldLimit = 3;
+
 const Man = function(log) {
   this._log = log;
   this._distros = [];
   this._updateDistros();
-  const job = schedule.scheduleJob("0 0 * * 0", async () => {this._updateDistros()});
+  schedule.scheduleJob("0 0 * * 0", async () => {this._updateDistros()});
 }
 
 Man.prototype._resolveDistro = function(distro) {
@@ -26,7 +29,7 @@ Man.prototype._resolveDistro = function(distro) {
   return undefined;
 }
 
-Man.prototype._updateDistros = async function (){
+Man.prototype._updateDistros = async function() {
   const distributions = [];
   const manpage = await manned.get("/");
   this._log.debug("Retrieved Linux distribution list");
@@ -46,7 +49,6 @@ Man.prototype._updateDistros = async function (){
 }
 
 Man.prototype.execute = async function(prefix, command, args, message, client) {
-  await message.channel.startTyping();
   // parse args
   let distro;
   let section;
@@ -57,7 +59,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   }
   let arg = 0;
   while (args.length > 0) {
-    if(args.length > 1){
+    if (args.length > 1) {
       if ((arg = parseInt(args[0])) == parseFloat(args[0])
           && (arg >= 1 && arg <= 9)) { // it is a valid section # (integer between 1 and 9)
         section = args.shift();
@@ -92,11 +94,9 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
       if (typeof section !== "undefined") {
         msg += " in section " + section;
       }
-      await message.channel.stopTyping();
       return message.channel.send(msg);
     } else {
       log.warn(error);
-      await message.channel.stopTyping();
       return;
     }
   }
@@ -112,7 +112,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   let sectionContents = "";
   let fields = 0;
   for (let i = 1; i < manText.length; i++) {
-    if (fields >= 4) { // this is 3 excluding name
+    if (fields >= fieldLimit) { // this is 3 excluding name
       this._log.debug("Field limit reached");
       break;
     }
@@ -143,8 +143,6 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   }
   url = res.request.res.responseUrl;
   const man = {name, section, header, os, url, sections};
-  console.log(header);
-  await message.channel.stopTyping();
   const embed = render(man);
   this._log.debug(`Sending man page ${man.name}(${man.section}) in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});

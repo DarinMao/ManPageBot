@@ -33,7 +33,14 @@ const modules = {
   "help": new Help(log),
   "info": new Info(log),
   "man": new Man(log),
-  "winman": new WinMan(log)
+  "winman": new WinMan("./windows/windowsserverdocs",
+      "WindowsServerDocs/administration/windows-commands",
+      "https://github.com/MicrosoftDocs/windowsserverdocs",
+      "master", log),
+  "poshman": new WinMan("./windows/PowerShell-Docs",
+      "reference/5.1",
+      "https://github.com/MicrosoftDocs/PowerShell-Docs",
+      "staging", log)
 }
 
 // log when discord client initialized
@@ -82,7 +89,7 @@ client.on('guildDelete', guild => {
 });
 
 // detect commands
-client.on("message", message => {
+client.on("message", async message => {
   // set unset prefix
   if (prefix.get(message.guild.id) == null) {
     prefix.set(message.guild.id, config.prefix);
@@ -96,8 +103,8 @@ client.on("message", message => {
     return;
   }
   // get array of arguments and command
-  var args = message.content.toLowerCase().replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
-  var command = args.shift();
+  var args = message.content.replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
+  var command = args.shift().toLowerCase();
 
   // execute
   if (command in modules) {
@@ -110,7 +117,9 @@ client.on("message", message => {
       }
     }
     log.debug(`Executing message ${message.id} command ${command} args ${args}`);
-    modules[command].execute(prefix, command, args, message, client);
+    message.channel.startTyping();
+    await modules[command].execute(prefix, command, args, message, client);
+    message.channel.stopTyping(true);
   }
 });
 
