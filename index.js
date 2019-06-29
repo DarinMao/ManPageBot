@@ -34,7 +34,7 @@ const modules = {
   "info": new Info(log),
   "man": new Man(log),
   "winman": new WinMan("./windows/windowsserverdocs",
-      "WindowsServerDocs/administration/windows-commands",
+      "WindowsServerDocs/administration",
       "https://github.com/MicrosoftDocs/windowsserverdocs",
       "master", log),
   "poshman": new WinMan("./windows/PowerShell-Docs",
@@ -103,8 +103,8 @@ client.on("message", async message => {
     return;
   }
   // get array of arguments and command
-  var args = message.content.replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
-  var command = args.shift().toLowerCase();
+  var args = message.content.toLowerCase().replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
+  var command = args.shift();
 
   // execute
   if (command in modules) {
