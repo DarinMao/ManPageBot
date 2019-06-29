@@ -1,6 +1,8 @@
 # README
 
-This is a Discord bot that fetches Linux and Windows manual pages.
+This is a Discord bot that fetches Linux and Windows manual pages. Version 6 is a complete rewrite with new features for Discord Hack Week. 
+
+https://manpagebot.ml/ Has a command list or you can use !help. 
 
 ### Setup
 
