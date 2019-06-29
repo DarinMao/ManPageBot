@@ -15,7 +15,9 @@ Help.prototype.execute = async function(prefix, command, args, message, client) 
     .addField(p + "ping", "Pings the bot")
     .addField(p + "info", "Displays bot info")
     .addField(p + "setprefix *prefix*", "Sets the bot command prefix for this guild (requires \"Manage Server\" permission)")
-    .addField(p + "man *command*", "Gets manual page for specified command")
+    .addField(p + "man [distro] [section] *command*", "Gets Linux manual page for specified command, optionally specify distro and section number")
+    .addField(p + "winman *command*", "Gets Windows CMD manual page for specified command")
+    .addField(p + "poshman *command*", "Gets Windows PowerShell manual page for specified command")
     .addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
   this._log.debug(`Sending help message in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
