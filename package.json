@@ -1,8 +1,8 @@
 {
   "name": "ManPage",
-  "description": "A Discord bot that provides Linux manual pages",
-  "version": "6.0.1",
-  "main": "bot.js",
+  "description": "A Discord bot that provides Linux and Windows manual pages",
+  "version": "6.0.2",
+  "main": "index.js",
   "scripts": {
     "start": "node index.js",
     "debug": "NODE_ENV=dev node index.js"

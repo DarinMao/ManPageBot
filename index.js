@@ -34,11 +34,11 @@ const modules = {
   "info": new Info(log),
   "man": new Man(log),
   "winman": new WinMan("./windows/windowsserverdocs",
-      "WindowsServerDocs/administration",
+      "WindowsServerDocs/administration/windows-commands",
       "https://github.com/MicrosoftDocs/windowsserverdocs",
       "master", log),
   "poshman": new WinMan("./windows/PowerShell-Docs",
-      "reference/5.1",
+      "reference/5.1/**",
       "https://github.com/MicrosoftDocs/PowerShell-Docs",
       "staging", log)
 }
@@ -118,7 +118,15 @@ client.on("message", async message => {
     }
     log.debug(`Executing message ${message.id} command ${command} args ${args}`);
     message.channel.startTyping();
-    await modules[command].execute(prefix, command, args, message, client);
+    try {
+      await modules[command].execute(prefix, command, args, message, client);
+    } catch (error) {
+      if (error.name == "DiscordAPIError" && error.code == 50013) {
+        await message.channel.send(":negative_squared_cross_mark: I am not allowed to do that, please allow me to embed links and attach files!");
+      } else {
+        await message.channel.send(":negative_squared_cross_mark: I couldn't execute that command, please contact a developer!");
+      }
+    }
     message.channel.stopTyping(true);
   }
 });

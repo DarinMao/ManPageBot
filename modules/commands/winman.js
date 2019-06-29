@@ -49,7 +49,9 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
   [...name].forEach(c => {
     iCaseName += "[" + c.toLowerCase() + c.toUpperCase() + "]"
   });
-  let path = await this._git.raw(["ls-files", this._path + "/**/" + iCaseName + "*.md"]);
+  iCaseName = this._path + "/" + iCaseName + "*.md";
+  let path = await this._git.raw(["ls-files", iCaseName]);
+  this._log.debug("Searching for " + iCaseName);
   if (path == null) {
     this._log.debug("Git returned no files");
     return message.channel.send(":negative_squared_cross_mark: No manual entry for " + name);
