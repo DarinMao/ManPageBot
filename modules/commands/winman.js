@@ -3,12 +3,12 @@ const simpleGit = require("simple-git/promise");
 const fs = require("fs");
 const util = require("util");
 const readFile = util.promisify(fs.readFile); // promisify because fs isn't promise based
-
 const schedule = require("node-schedule");
+const AsciiTable = require("ascii-table");
 
 const render = require("../render.js");
 
-const fieldLimit = 4;
+const fieldLimit = 3;
 
 // this is really an MSGitMan but keep the name
 const WinMan = function(git, path, remote, branch, log){
@@ -41,90 +41,117 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     name += args[i];
   }
 
+  this._log.debug("Running git ls-files with built name " + name);
   let path = await this._git.raw(["ls-files", this._path + "*/" + name + ".md"]);
   if (path == null) {
+    this._log.debug("Git returned no files");
     return message.channel.send(":negative_squared_cross_mark: No manual entry for " + name);
   }
   path = path.split("\n")[0];
+  this._log.debug("Found path is " + path);
 
   const file = await readFile(this._gitPath + "/" + path);
-  console.log(file.toString("utf-8"));
+  const fileText = file.toString("utf-8");
+  const manText = fileText.substring(fileText.indexOf("---", 3)+3).split(/\r?\n/);
 
   const url = this._remote + "/blob/" + this._branch + "/" + path;
+  this._log.debug("Built URL is " + url);
   const header = "Windows Documentation";
   const sections = {};
   let sectionHead = "";
   let sectionContents = "";
   let fields = 0;
-  /*
-  let prevLineWasTable = false; //used to see if table setup is needed
-  let tableBlockLength;
-  // try {
-  //   res = await axios.get(searchResults.items[0].url);
-  //   searchResults = res.data;
-  //   res = await axios.get(searchResults.download_url);
-  //   const urlSplit = searchResults.download_url.substring(34).split('/');
-  //   for(let i = 0; i < urlSplit.length; i++){
-  //     url += "/" + urlSplit[i];
-  //     if(i == 1){
-  //       url += "/blob";
-  //     }
-  //   }
-  //   searchResults = res.data;
-  // } catch(error) {
-  //   return message.channel.send("error fetching page!");
-  // }
-  const manPageLines = searchResults.split("\n");
-  for (let i = 0; i < manPageLines.length; i++) {
+  let quote = false;
+  let table = false;
+  const tableObj = new AsciiTable();
+  for (let line of manText) {
+    line = line
+        .replace(/\/?a<[^>]*>/ig, "")
+        .replace(/\[(.+)\]\(.+\)/g, "$1");
     if (fields >= fieldLimit) {
-      break; // limit reached
+      this._log.debug("Field limit reached");
+      break;
     }
-    if(manPageLines[i] == ""){ // skip blank lines
+    // deal with quotes
+    // > like this
+    // > one
+    if (line.startsWith(">")) {
+      if (!quote) {
+        this._log.debug("New block quote");
+        sectionContents += "```\n";
+        quote = true;
+      }
+      sectionContents += line.substring(1);
+      continue;
+    } else if (quote) {
+      this._log.debug("End block quote");
+      sectionContents += "\n```\n";
+      quote = false;
       continue;
     }
-    if(manPageLines[i].charAt(0) == "#"){ //header
-      if(manPageLines[i].charAt(1) != "#"){ //title
-        name = manPageLines[i].substring(2).replace(/[\r\r]+/g, "");
+    // deal with tables
+    if (/(\|-+)+\|/.test(line)) { // ignore the first row of dashes
+      continue;
+    }
+    if (line.startsWith("|")) {
+      if (!table) {
+        this._log.debug("Creating new table");
+        tableObj.clear();
+        tableObj.removeBorder();
+        tableObj.setHeadingAlignLeft();
+        const tableHeadings = line.split(/ *\| */);
+        tableHeadings.shift();
+        tableHeadings.pop();
+        this._log.debug("Table headings " + tableHeadings);
+        tableObj.setHeading.apply(tableObj, tableHeadings);
+        table = true;
+        continue;
       }
-      if(sectionHead != "" && sectionContents.replace(/[\r\r]+/g, "") != ""){ //save
+      const tableRow = line.replace(/\\/g, "").split(/ *\| */);
+      tableRow.shift();
+      tableRow.pop();
+      this._log.debug("Add table row " + tableRow[0]);
+      tableObj.addRow.apply(tableObj, tableRow);
+      continue;
+    } else if (table) {
+      this._log.debug("End table");
+      sectionContents += "```\n" + tableObj.toString() + "\n```\n";
+      table = false;
+      continue;
+    }
+    // normal things
+    if (line == "") {
+      continue;
+    }
+    if (line.startsWith("# ")) { // top level heading
+      name = line.substring(2);
+      this._log.debug("Page heading is " + name);
+      sectionHead = name;
+      sectionContents = "**" + this._gitPath.split("/").pop() + "**\n";
+    } else if (line.startsWith("## ")) { // heading 2, new section
+      if (sectionHead != "") {  // if not empty, save
+        this._log.debug("Adding " + sectionHead);
         sections[sectionHead] = sectionContents;
         fields++;
       }
-      if(fields == 0){
-        sectionHead = "Synopsis";
-      } else {
-        sectionHead = manPageLines[i].replace(/#/g,"");
-      }
       sectionContents = "";
-    }
-    else if(sectionHead != "") {
-      const unmodifiedManpageLine = manPageLines[i];
-      manPageLines[i] = manPageLines[i].replace("> ", ""); // for the lines beginning with "> "
-      if(manPageLines[i] == "[!CAUTION]"){
-        manPageLines[i] == "*CAUTION!*";
-      } else if(manPageLines[i].charAt(0) == "|"){
-        const tableSplits = manPageLines[i].split("|");
-        manPageLines[i] = "";
-        if(!prevLineWasTable){
-          tableBlockLength = tableSplits[1].length + 5;
-        }
-        for(let j = 1; j < tableSplits.length; j++){
-          while(tableSplits[j].length < tableBlockLength){
-            tableSplits[j] += " ";
-          }
-          manPageLines[i]+= tableSplits[j];
-        }
-        manPageLines[i]+= " \n ";
-      }
-      prevLineWasTable = unmodifiedManpageLine.charAt(0) == "|";
-      sectionContents += manPageLines[i];
+      sectionHead = line.substring(3);
+    } else if (line.startsWith("#")) {
+      sectionContents += line.replace(/#+ /, "**") + "**\n";
+    } else {
+      sectionContents += line;
+      sectionContents += "\n";
     }
   }
-  */
+  if (fields < fieldLimit) {
+    this._log.debug("Adding " + sectionHead);
+    sections[sectionHead] = sectionContents;
+  }
 
-  //const man = {name, header, url, sections};
-  const man = {name, header, url};
+  const man = {name, header, url, sections};
+  //const man = {name, header, url};
   const embed = render(man);
+  this._log.debug(`Sending winman page ${man.name} in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
 }
 

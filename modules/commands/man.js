@@ -102,7 +102,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   }
   const data = parser.parse(res.data, {pre: true});
   const manText = data.querySelector("pre").innerHTML.split("\n");
-  const fullHeader = manText[0].split(/ {2,}/);
+  const fullHeader = manText.shift().split(/ {2,}/);
   name = fullHeader[0].split("(")[0];
   section = fullHeader[0].match(/(?<=\()[1-9][a-z]*(?=\))/g);
   const header = fullHeader[1];
@@ -111,12 +111,12 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   let sectionHead = "";
   let sectionContents = "";
   let fields = 0;
-  for (let i = 1; i < manText.length; i++) {
-    if (fields >= fieldLimit) { // this is 3 excluding name
+  for (let line of manText) {
+    if (fields >= fieldLimit) {
       this._log.debug("Field limit reached");
       break;
     }
-    if (manText[i].startsWith("<a href=\"#head")) { // new section
+    if (line.startsWith("<a href=\"#head")) { // new section
       if (sectionHead != "") { // if not empty, save
         if (!exclude.has(sectionHead)){
           this._log.debug("Adding " + sectionHead);
@@ -125,21 +125,25 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
         }
       }
       sectionContents = "";
-      sectionHead = manText[i].replace(/<[^>]+>/ig,"");
-    } else if (manText[i].startsWith(" ")){ // add line to text
+      sectionHead = line.replace(/<[^>]+>/ig,"");
+    } else if (line.startsWith(" ")){ // add line to text
       sectionContents += manText[i]
           .replace(/></g, "> <") // split tags apart
           .replace(/<\/?b[^>]*>/ig, "**") // bold
           .replace(/<\/?i[^>]*>/ig, "*") // italic
           .replace(/<\/?a[^>]*>/ig, ""); // remove links
       sectionContents += "\n";
-    } else if (manText[i] == "" && sectionHead == "DESCRIPTION") {
+    } else if (line == "" && sectionHead == "DESCRIPTION") {
       this._log.debug("Adding DESCRIPTION");
       sections[sectionHead] = sectionContents;
       sectionHead = "";
       sectionContents = "";
       fields++;
     }
+  }
+  if (fields < fieldLimit && !exclude.has(sectionHead)) {
+    this._log.debug("Adding " + sectionHead);
+    sections[sectionHead] = sectionContents;
   }
   url = res.request.res.responseUrl;
   const man = {name, section, header, os, url, sections};
