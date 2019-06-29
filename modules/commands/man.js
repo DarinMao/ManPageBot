@@ -127,7 +127,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
       sectionContents = "";
       sectionHead = line.replace(/<[^>]+>/ig,"");
     } else if (line.startsWith(" ")){ // add line to text
-      sectionContents += manText[i]
+      sectionContents += line
           .replace(/></g, "> <") // split tags apart
           .replace(/<\/?b[^>]*>/ig, "**") // bold
           .replace(/<\/?i[^>]*>/ig, "*") // italic
