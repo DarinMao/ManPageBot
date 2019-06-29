@@ -40,6 +40,25 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     }
     name += args[i];
   }
+  //rudimentary code to make the bot a little more case insensitive as a compromise to not searching through the entire file system
+  if(this._gitPath == "./windows/windowsserverdocs"){ //just use toLowerCase to make the bot case insensitive
+    name = name.toLowerCase();
+  }
+  else if(this._gitPath == "./windows/PowerShell-Docs"){
+    const nameSplit = name.split("-");
+    name = "";
+    for(let i = 0; i < nameSplit.length; i++){
+      if(nameSplit[i].substring(0, 2).toLowerCase() == "ps"){
+        nameSplit[i] = nameSplit[i].substring(0, 3).toUpperCase() + nameSplit[i].substring(3); //the letter right after PS is always capitalized in these docs
+      } else {
+        nameSplit[i] = nameSplit[i].substring(0, 1).toUpperCase() + nameSplit[i].substring(1);
+      }
+      if(i > 0){
+        name += "-";
+      }
+      name += nameSplit[i];
+    }
+  }
 
   this._log.debug("Running git ls-files with built name " + name);
   let path = await this._git.raw(["ls-files", this._path + "*/" + name + ".md"]);
