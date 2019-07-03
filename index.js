@@ -9,11 +9,8 @@ prefix.init();
 // config file for bot token
 const config = require("./config.json");
 
-// log
-const log = require("simple-node-logger").createSimpleLogger();
-if (process.env.NODE_ENV == "dev") {
-    log.setLevel("debug");
-}
+// log file
+const log = require("./modules/logger.js");
 
 // log all errors and continue
 process.on('unhandledRejection', (reason) => {
@@ -28,19 +25,21 @@ const Info = require("./modules/commands/info.js")
 const Man = require("./modules/commands/man.js")
 const WinMan = require("./modules/commands/winman.js");
 const modules = {
-  "ping": new Ping(log),
-  "setprefix": new SetPrefix(log),
-  "help": new Help(log),
-  "info": new Info(log),
-  "man": new Man(log),
-  "winman": new WinMan("./windows/windowsserverdocs",
+  ping: new Ping(),
+  setprefix: new SetPrefix(),
+  help: new Help(),
+  info: new Info(),
+  man: new Man(),
+  winman: new WinMan("./windows/windowsserverdocs",
       "WindowsServerDocs/administration/windows-commands",
       "https://github.com/MicrosoftDocs/windowsserverdocs",
-      "master", log),
-  "poshman": new WinMan("./windows/PowerShell-Docs",
+      "master"),
+  get cmdman() {return this.winman;},
+  poshman: new WinMan("./windows/PowerShell-Docs",
       "reference/5.1/**",
       "https://github.com/MicrosoftDocs/PowerShell-Docs",
-      "staging", log)
+      "staging"),
+  get psman() {return this.poshman;}
 }
 
 // log when discord client initialized

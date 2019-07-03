@@ -6,6 +6,7 @@ const manned = axios.create({
 const parser = require("node-html-parser");
 const schedule = require("node-schedule");
 const render = require("../render.js");
+const log = require("../logger.js");
 
 // fields to exclude
 const exclude = new Set(["AUTHOR", "REPORTING BUGS", "COPYRIGHT", "SEE ALSO"]);
@@ -13,8 +14,7 @@ const exclude = new Set(["AUTHOR", "REPORTING BUGS", "COPYRIGHT", "SEE ALSO"]);
 // field limit
 const fieldLimit = 3;
 
-const Man = function(log) {
-  this._log = log;
+const Man = function() {
   this._distros = [];
   this._updateDistros();
   schedule.scheduleJob("0 0 * * 0", async () => {this._updateDistros()});
@@ -32,7 +32,7 @@ Man.prototype._resolveDistro = function(distro) {
 Man.prototype._updateDistros = async function() {
   const distributions = [];
   const manpage = await manned.get("/");
-  this._log.debug("Retrieved Linux distribution list");
+  log.debug("Retrieved Linux distribution list");
   const distroHTMLList = parser.parse(manpage.data).querySelector("#systems").innerHTML; // this part is split up for readability
   const distroList = parser.parse(distroHTMLList).querySelectorAll("a");
   for (let i = 0; i < distroList.length; i++){
@@ -40,11 +40,11 @@ Man.prototype._updateDistros = async function() {
     if (distroName != "#"){ // href for more links
       distroName = distroName.match(/[^/]+$/g); // get substr of href after the last slash
       distributions.push(distroName[0]);
-      this._log.debug("Found distribution " + distroName[0]);
+      log.debug("Found distribution " + distroName[0]);
     }
   }
   this._distros = distributions;
-  this._log.info("Updated Linux distribution list");
+  log.info("Updated Linux distribution list");
   return distributions;
 }
 
@@ -54,7 +54,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   let section;
   let name;
   if (args.length < 1) { // reject things that have invalid # of arguments
-    this._log.debug("Rejecting man command with no arguments");
+    log.debug("Rejecting man command with no arguments");
     return message.channel.send(":negative_squared_cross_mark: What manual page do you want?");
   }
   let arg = 0;
@@ -81,7 +81,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   if (typeof section !== "undefined") {
     url += "." + section;
   }
-  this._log.debug("Built URL is " + url);
+  log.debug("Built URL is " + url);
 
   // fetch and parse the man page
   let res;
@@ -89,7 +89,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
     res = await manned.get(url);
   } catch (error) {
     if (error.request.res.statusCode == 404) {
-      this._log.debug("Man page returned 404");
+      log.debug("Man page returned 404");
       let msg = ":negative_squared_cross_mark: No manual entry for " + name;
       if (typeof section !== "undefined") {
         msg += " in section " + section;
@@ -113,13 +113,13 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
   let fields = 0;
   for (let line of manText) {
     if (fields >= fieldLimit) {
-      this._log.debug("Field limit reached");
+      log.debug("Field limit reached");
       break;
     }
     if (line.startsWith("<a href=\"#head")) { // new section
       if (sectionHead != "") { // if not empty, save
         if (!exclude.has(sectionHead)){
-          this._log.debug("Adding " + sectionHead);
+          log.debug("Adding " + sectionHead);
           sections[sectionHead] = sectionContents;
           fields++;
         }
@@ -134,7 +134,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
           .replace(/<\/?a[^>]*>/ig, ""); // remove links
       sectionContents += "\n";
     } else if (line == "" && sectionHead == "DESCRIPTION") {
-      this._log.debug("Adding DESCRIPTION");
+      log.debug("Adding DESCRIPTION");
       sections[sectionHead] = sectionContents;
       sectionHead = "";
       sectionContents = "";
@@ -142,13 +142,13 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
     }
   }
   if (fields < fieldLimit && !exclude.has(sectionHead)) {
-    this._log.debug("Adding " + sectionHead);
+    log.debug("Adding " + sectionHead);
     sections[sectionHead] = sectionContents;
   }
   url = res.request.res.responseUrl;
   const man = {name, section, header, os, url, sections};
   const embed = render(man);
-  this._log.debug(`Sending man page ${man.name}(${man.section}) in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
+  log.debug(`Sending man page ${man.name}(${man.section}) in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
 }
 

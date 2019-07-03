@@ -7,30 +7,30 @@ const schedule = require("node-schedule");
 const AsciiTable = require("ascii-table");
 
 const render = require("../render.js");
+const log = require("../logger.js");
 
 const fieldLimit = 3;
 
 // this is really an MSGitMan but keep the name
-const WinMan = function(git, path, remote, branch, log){
+const WinMan = function(git, path, remote, branch){
   this._gitPath = git;
   this._git = simpleGit(this._gitPath);
   this._path = path;
   this._remote = remote;
   this._branch = branch;
-  this._log = log;
   this._updateGit();
   schedule.scheduleJob("0 0 * * 0", async () => {this._updateGit()});
 }
 
 WinMan.prototype._updateGit = async function() {
   this._git.pull("origin", this._branch, {"--depth": "1"});
-  this._log.info("Pulled " + this._gitPath);
+  log.info("Pulled " + this._gitPath);
 }
 
 WinMan.prototype.execute = async function(prefix, command, args, message, client){
   // generate url
   if (args.length < 1){ // invalid number of args
-    this._log.debug("Rejecting winman command with no arguments");
+    log.debug("Rejecting winman command with no arguments");
     return message.channel.send(":negative_squared_cross_mark: What manual page do you want?");
   }
   let name = "";
@@ -41,7 +41,7 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     name += args[i];
   }
 
-  this._log.debug("Running git ls-files with built name " + name);
+  log.debug("Running git ls-files with built name " + name);
   // build a string for case insensitive searching
   // since ls-files doesn't actually support this
   // cd => [cC][dD]
@@ -51,20 +51,20 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
   });
   iCaseName = this._path + "/" + iCaseName + "*.md";
   let path = await this._git.raw(["ls-files", iCaseName]);
-  this._log.debug("Searching for " + iCaseName);
+  log.debug("Searching for " + iCaseName);
   if (path == null) {
-    this._log.debug("Git returned no files");
+    log.debug("Git returned no files");
     return message.channel.send(":negative_squared_cross_mark: No manual entry for " + name);
   }
   path = path.split("\n")[0];
-  this._log.debug("Found path is " + path);
+  log.debug("Found path is " + path);
 
   const file = await readFile(this._gitPath + "/" + path);
   const fileText = file.toString("utf-8");
   const manText = fileText.substring(fileText.indexOf("---", 3)+3).split(/\r?\n/);
 
   const url = this._remote + "/blob/" + this._branch + "/" + path;
-  this._log.debug("Built URL is " + url);
+  log.debug("Built URL is " + url);
   const header = "Windows Documentation";
   const sections = {};
   let sectionHead = "";
@@ -78,7 +78,7 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
         .replace(/\/?a<[^>]*>/ig, "")
         .replace(/\[(.+)\]\(.+\)/g, "$1");
     if (fields >= fieldLimit) {
-      this._log.debug("Field limit reached");
+      log.debug("Field limit reached");
       break;
     }
     // deal with quotes
@@ -86,14 +86,14 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     // > one
     if (line.startsWith(">")) {
       if (!quote) {
-        this._log.debug("New block quote");
+        log.debug("New block quote");
         sectionContents += "```\n";
         quote = true;
       }
       sectionContents += line.substring(1);
       continue;
     } else if (quote) {
-      this._log.debug("End block quote");
+      log.debug("End block quote");
       sectionContents += "\n```\n";
       quote = false;
       continue;
@@ -104,14 +104,14 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     }
     if (line.startsWith("|")) {
       if (!table) {
-        this._log.debug("Creating new table");
+        log.debug("Creating new table");
         tableObj.clear();
         tableObj.removeBorder();
         tableObj.setHeadingAlignLeft();
         const tableHeadings = line.split(/ *(?<!\\)\| */);
         tableHeadings.shift();
         tableHeadings.pop();
-        this._log.debug("Table headings " + tableHeadings);
+        log.debug("Table headings " + tableHeadings);
         tableObj.setHeading.apply(tableObj, tableHeadings);
         table = true;
         continue;
@@ -122,11 +122,11 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
       });
       tableRow.shift();
       tableRow.pop();
-      this._log.debug("Add table row " + tableRow[0]);
+      log.debug("Add table row " + tableRow[0]);
       tableObj.addRow.apply(tableObj, tableRow);
       continue;
     } else if (table) {
-      this._log.debug("End table");
+      log.debug("End table");
       sectionContents += "```\n" + tableObj.toString() + "\n```\n";
       table = false;
       continue;
@@ -137,12 +137,12 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     }
     if (line.startsWith("# ")) { // top level heading
       name = line.substring(2);
-      this._log.debug("Page heading is " + name);
+      log.debug("Page heading is " + name);
       sectionHead = name;
       sectionContents = "**" + this._gitPath.split("/").pop() + "**\n";
     } else if (line.startsWith("## ")) { // heading 2, new section
       if (sectionHead != "") {  // if not empty, save
-        this._log.debug("Adding " + sectionHead);
+        log.debug("Adding " + sectionHead);
         sections[sectionHead] = sectionContents;
         fields++;
       }
@@ -156,14 +156,14 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     }
   }
   if (fields < fieldLimit) {
-    this._log.debug("Adding " + sectionHead);
+    log.debug("Adding " + sectionHead);
     sections[sectionHead] = sectionContents;
   }
 
   const man = {name, header, url, sections};
   //const man = {name, header, url};
   const embed = render(man);
-  this._log.debug(`Sending winman page ${man.name} in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
+  log.debug(`Sending winman page ${man.name} in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
 }
 

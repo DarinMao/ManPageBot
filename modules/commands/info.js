@@ -7,9 +7,9 @@ const format = humanizeDuration.humanizer({
 	round: true
 });
 
-const Info = function(log) {
-  this._log = log;
-}
+const log = require("../logger.js");
+
+const Info = function() {}
 
 Info.prototype.execute = async function(prefix, command, args, message, client) {
   const p = prefix.get(message.guild.id);
@@ -27,7 +27,7 @@ Info.prototype.execute = async function(prefix, command, args, message, client) 
     .addField("Guilds", guilds, true)
     .addField("Version", version, true)
     .addField("Uptime", uptime);
-	this._log.debug(`Sending info message in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
+	log.debug(`Sending info message in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
 }
 

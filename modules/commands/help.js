@@ -1,8 +1,8 @@
 const Discord = require("discord.js");
 
-const Help = function(log) {
-  this._log = log;
-}
+const log = require("../logger.js");
+
+const Help = function() {}
 
 Help.prototype.execute = async function(prefix, command, args, message, client) {
   const p = prefix.get(message.guild.id);
@@ -19,7 +19,7 @@ Help.prototype.execute = async function(prefix, command, args, message, client) 
     .addField(p + "winman *command*", "Gets Windows CMD manual page for specified command")
     .addField(p + "poshman *command*", "Gets Windows PowerShell manual page for specified command.  Mostly case sensitive to the real commands.")
     .addField("Notes", "- Commands do NOT work in DM.\n- Do not include brackets when typing commands.\n- The prefix must not have any whitespace in it");
-  this._log.debug(`Sending help message in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
+  log.debug(`Sending help message in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   return message.channel.send({embed});
 }
 
