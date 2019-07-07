@@ -23,7 +23,8 @@ const WinMan = function(git, path, remote, branch){
 }
 
 WinMan.prototype._updateGit = async function() {
-  this._git.pull("origin", this._branch);
+  await this._git.pull("origin", this._branch);
+  await this._git.reset("hard");
   log.info("Pulled " + this._gitPath);
 }
 

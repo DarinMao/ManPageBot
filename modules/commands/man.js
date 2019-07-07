@@ -63,13 +63,14 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
       if ((arg = parseInt(args[0])) == parseFloat(args[0])
           && (arg >= 1 && arg <= 9)) { // it is a valid section # (integer between 1 and 9)
         section = args.shift();
+        continue;
       } else if (typeof (distro = this._resolveDistro(args[0])) !== "undefined") { // it is a valid distro
         args.shift();
+        continue;
       }
-   } else { // it's the command and also the last arg
-      name = args.shift();
-      break;
-    }
+	}
+    name = args.shift();
+    break;
   }
 
   // build URL
