@@ -141,7 +141,7 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
       fields++;
     }
   }
-  if (fields < fieldLimit && !exclude.has(sectionHead)) {
+  if (fields < fieldLimit && !exclude.has(sectionHead) && sectionHead != "") {
     log.debug("Adding " + sectionHead);
     sections[sectionHead] = sectionContents;
   }

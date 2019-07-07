@@ -3,5 +3,4 @@ start.sh
 windows/
 node_modules/
 .node-persist/
-package-lock.json
 README.md

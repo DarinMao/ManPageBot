@@ -101,7 +101,7 @@ client.on("message", async message => {
     return;
   }
   // get array of arguments and command
-  var args = message.content.toLowerCase().replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
+  var args = message.content.toLowerCase().replace(/[^A-Za-z\d\s-]/g, "").replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
   var command = args.shift();
 
   // execute
