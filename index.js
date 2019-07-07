@@ -96,9 +96,8 @@ client.on("message", async message => {
   }
   // ignore bad messages
   if (message.author.bot
-      || (message.content.indexOf(prefix.get(message.guild.id)) !== 0 && !message.isMentioned(client.user.id))
-      || message.channel instanceof Discord.DMChannel) {
-    log.debug(`Ignoring message ${message.id}`);
+      || message.channel instanceof Discord.DMChannel
+      || (message.content.indexOf(prefix.get(message.guild.id)) !== 0 && !message.isMentioned(client.user.id))) {
     return;
   }
   // get array of arguments and command

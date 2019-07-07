@@ -23,7 +23,7 @@ const WinMan = function(git, path, remote, branch){
 }
 
 WinMan.prototype._updateGit = async function() {
-  this._git.pull("origin", this._branch, {"--depth": "1"});
+  this._git.pull("origin", this._branch);
   log.info("Pulled " + this._gitPath);
 }
 
@@ -49,8 +49,8 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
   [...name].forEach(c => {
     iCaseName += "[" + c.toLowerCase() + c.toUpperCase() + "]"
   });
-  iCaseName = this._path + "/" + iCaseName + "*.md";
-  let path = await this._git.raw(["ls-files", iCaseName]);
+  iCaseName = this._path + "/" + iCaseName;
+  let path = await this._git.raw(["ls-files", iCaseName+".md"]);
   log.debug("Searching for " + iCaseName);
   if (path == null) {
     log.debug("Git returned no files");
