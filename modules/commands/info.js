@@ -32,5 +32,6 @@ Info.prototype.execute = async function(prefix, command, args, message, client) 
 }
 
 Info.prototype.permission = ["SEND_MESSAGES"];
+Info.prototype.strip = true;
 
 module.exports = Info;

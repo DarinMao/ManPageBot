@@ -12,5 +12,6 @@ Ping.prototype.execute = async function(prefix, command, args, message, client) 
 }
 
 Ping.prototype.permission = ["SEND_MESSAGES"];
+Ping.prototype.strip = true;
 
 module.exports = Ping;

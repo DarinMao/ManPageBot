@@ -24,5 +24,6 @@ Help.prototype.execute = async function(prefix, command, args, message, client) 
 }
 
 Help.prototype.permission = ["SEND_MESSAGES"];
+Help.prototype.strip = true;
 
 module.exports = Help;

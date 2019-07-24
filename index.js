@@ -8,6 +8,7 @@ prefix.init();
 
 // config file for bot token
 const config = require("./config.json");
+const owners = new Set(config.owners);
 
 // log file
 const log = require("./modules/logger.js");
@@ -101,19 +102,26 @@ client.on("message", async message => {
     return;
   }
   // get array of arguments and command
-  var args = message.content.toLowerCase().replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().replace(/[^A-Za-z\d\s-]/g, "").split(/ +/g);
+  var args = message.content.toLowerCase().replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
   var command = args.shift();
 
   // execute
   if (command in modules) {
-    const permission = modules[command].permission;
-    for (let i = 0; i < permission.length; i++) {
-      if (!message.member.hasPermission(permission[i])) {
-        message.channel.send(":negative_squared_cross_mark: You are not allowed to do that!");
-        log.debug(`Message ${message.id} not executed because missing permission ${permission[i]}`);
-        return;
-      }
-    }
+		if (modules[command].strip) {
+			args = args.join(" ").replace(/[^A-Za-z\d\s-]/g, "").trim().split(/ +/g);
+		}
+		if (!owners.has(message.author.id)) {
+	    const permissions = modules[command].permission;
+	    for (let permission of permissions) {
+	      if (!message.member.hasPermission(permission)) {
+	        message.channel.send(":negative_squared_cross_mark: You are not allowed to do that!");
+	        log.debug(`Message ${message.id} not executed because missing permission ${permission}`);
+	        return;
+	      }
+	    }
+		} else {
+			log.debug(`Owner bypass permission check for message ${message.id}`)
+		}
     log.debug(`Executing message ${message.id} command ${command} args ${args}`);
     message.channel.startTyping();
     try {

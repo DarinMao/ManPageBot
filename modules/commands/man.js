@@ -154,5 +154,6 @@ Man.prototype.execute = async function(prefix, command, args, message, client) {
 }
 
 Man.prototype.permission = ["SEND_MESSAGES"];
+Man.prototype.strip = true;
 
 module.exports = Man;

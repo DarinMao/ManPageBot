@@ -14,5 +14,6 @@ SetPrefix.prototype.execute = async function(prefix, command, args, message, cli
 }
 
 SetPrefix.prototype.permission = ["MANAGE_GUILD"];
+SetPrefix.prototype.strip = false;
 
 module.exports = SetPrefix;

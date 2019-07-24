@@ -41,6 +41,7 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
     }
     name += args[i];
   }
+  name = name.replace(/[^A-Za-z\d\s-]/g, "");
 
   log.debug("Running git ls-files with built name " + name);
   // build a string for case insensitive searching
@@ -169,5 +170,6 @@ WinMan.prototype.execute = async function(prefix, command, args, message, client
 }
 
 WinMan.prototype.permission = ["SEND_MESSAGES"];
+WinMan.prototype.strip = true;
 
 module.exports = WinMan;
