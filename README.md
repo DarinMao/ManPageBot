@@ -12,30 +12,27 @@ Use `!help` or view [the command list](https://manpagebot.ml/commands)
 ## Self Hosting
 
 1. Create a Discord bot and a bot user. 
-2. Create config.json, enter the bot token and a default prefix. For example,
+2. Create config.json, enter the bot token, a default prefix, and a list of owner IDs. For example,
     ```js
     {
       "prefix": "!",
-      "token": "NCAFAKEzTOKENTMxOrQ1FAKE.TOKENQ.QFAKEyTOKENvysEdFAKE-TOKENh"
+      "token": "NCAFAKEzTOKENTMxOrQ1FAKE.TOKENQ.QFAKEyTOKENvysEdFAKE-TOKENh",
+      "owners": [
+        "288477253535399937",
+        "217322331385757697"
+      ]
     }
     ```
 3. Set up the Windows documentation repositories
     ```
     mkdir windows
     cd windows
-    git init windowsserverdocs
+    git clone https://github.com/MicrosoftDocs/windowsserverdocs
     cd windowsserverdocs
-    git remote add origin https://github.com/MicrosoftDocs/windowsserverdocs
-    git config core.sparsecheckout true
-    echo "WindowsServerDocs/administration/windows-commands/*" >> .git/info/sparse-checkout
-    git pull --depth=1 origin master
+    git checkout master
     cd ..
-    git init PowerShell-Docs
+    git clone https://github.com/MicrosoftDocs/PowerShell-Docs
     cd PowerShell-Docs
-    git remote add origin https://github.com/MicrosoftDocs/PowerShell-Docs
-    git config core.sparsecheckout true
-    echo "reference/5.1/*" >> .git/info/sparse-checkout
-    git pull --depth=1 origin staging
     git checkout staging
     ```
 4. Return to the root directory and start the bot
