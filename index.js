@@ -6,9 +6,13 @@ const client = new Discord.Client();
 const prefix = require("./modules/prefix.js");
 prefix.init();
 
-// config file for bot token
+// config file for tokens
 const config = require("./config.json");
 const owners = new Set(config.owners);
+
+// dbl
+const DBL = require("dblapi.js");
+const dbl = new DBL(config.dbltoken, client);
 
 // log file
 const log = require("./modules/logger.js");
@@ -41,15 +45,19 @@ const modules = {
       "https://github.com/MicrosoftDocs/PowerShell-Docs",
       "staging"),
   get psman() {return this.poshman;}
-}
+};
 
-// log when discord client initialized
+// log when discord client initialized, then change status and update server count on interval
 client.on('ready', () => {
 	log.info("Bot initialized");
 	updateStatus();
+	dbl.postStats(client.guilds.size);
 	setInterval(() => {
 	    updateStatus();
 	}, 10000);
+	setInterval(() => {
+		dbl.postStats(client.guilds.size);
+	}, 1800000);
 });
 
 // status messages
@@ -74,7 +82,7 @@ const updateStatus = () => {
         log.debug("Set status to help");
         statusIndex = 0;
     }
-}
+};
 
 // set prefix and notify when guild is added
 client.on('guildCreate', guild => {
