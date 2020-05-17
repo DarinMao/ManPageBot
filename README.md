@@ -1,5 +1,6 @@
 [![Discord](https://discordapp.com/api/guilds/371377296285761558/widget.png)](https://discord.gg/hU3wMfQ)
-[![Discord Bots](https://top.gg/api/widget/status/371357658009305101.svg)](https://top.gg/bot/371357658009305101)
+[![top.gg status](https://top.gg/api/widget/status/371357658009305101.svg)](https://top.gg/bot/371357658009305101)
+[![top.gg servers](https://top.gg/api/widget/servers/371357658009305101.svg)](https://top.gg/bot/371357658009305101)
 ![Version](https://img.shields.io/github/package-json/v/DarinMao/ManPageBot.svg)
 [![ManPage Bot](https://cdn.discordapp.com/attachments/363484056769265687/594948471920787456/header.png)](https://manpagebot.tk/)
 [![Join Discord](https://cdn.discordapp.com/attachments/363484056769265687/594948487163150341/discord.png)](https://discord.gg/hU3wMfQ)
