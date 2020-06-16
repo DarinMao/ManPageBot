@@ -1,7 +1,7 @@
 {
   "name": "ManPage",
   "description": "A Discord bot that provides Linux and Windows manual pages",
-  "version": "6.0.5",
+  "version": "6.1.0",
   "license": "GPL-3.0-only",
   "main": "index.js",
   "scripts": {
@@ -12,7 +12,7 @@
     "ascii-table": "0.0.9",
     "axios": "^0.19.2",
     "dblapi.js": "^2.4.0",
-    "discord.js": "^11.6.4",
+    "discord.js": "^12.2.0",
     "humanize-duration": "^3.22.0",
     "node-html-parser": "^1.2.16",
     "node-persist": "^3.0.5",

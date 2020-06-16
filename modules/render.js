@@ -8,7 +8,7 @@ const render = function(man) {
   if (typeof man.header !== "undefined") {
     title += "\t" + man.header;
   }
-  const embed = new Discord.RichEmbed()
+  const embed = new Discord.MessageEmbed()
     .setTitle(title)
     .setColor(0x009698)
     .setURL(man.url);

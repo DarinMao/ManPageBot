@@ -3,7 +3,7 @@ const log = require("../logger.js");
 const Ping = function() {}
 
 Ping.prototype.execute = async function(prefix, command, args, message, client) {
-  const APILatency = Math.round(client.ping);
+  const APILatency = Math.round(client.ws.ping);
   log.debug(`Sending ping in guild ${message.guild.name} (${message.guild.id}) channel ${message.channel.name} (${message.channel.id})`);
   const m = await message.channel.send("Pong!\nAPI Latency: `" + APILatency + " ms`");
   const RTLatency = m.createdTimestamp - message.createdTimestamp;

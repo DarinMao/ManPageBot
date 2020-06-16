@@ -51,12 +51,12 @@ const modules = {
 client.on('ready', () => {
 	log.info("Bot initialized");
 	updateStatus();
-	dbl.postStats(client.guilds.size);
+	dbl.postStats(client.guilds.cache.size);
 	setInterval(() => {
 	    updateStatus();
 	}, 10000);
 	setInterval(() => {
-		dbl.postStats(client.guilds.size);
+		dbl.postStats(client.guilds.cache.size);
 	}, 1800000);
 });
 
@@ -64,15 +64,15 @@ client.on('ready', () => {
 let statusIndex = 0;
 const updateStatus = () => {
     if (statusIndex == 0) {
-    	let gameString = client.guilds.size + " guild";
-    	if (client.guilds.size != 1) gameString += "s";
+    	let gameString = client.guilds.cache.size + " guild";
+    	if (client.guilds.cache.size != 1) gameString += "s";
     	client.user.setActivity(gameString);
       log.debug("Set status to guilds");
     	statusIndex++;
     }
     else if (statusIndex == 1) {
-        let gameString = client.users.size + " user";
-        if (client.users.size != 1) gameString += "s";
+        let gameString = client.users.cache.size + " user";
+        if (client.users.cache.size != 1) gameString += "s";
         client.user.setActivity(gameString);
         log.debug("Set status to users");
         statusIndex++;
@@ -104,20 +104,22 @@ client.on("message", async message => {
     log.debug(`Set unset prefix for ${message.guild.id}`);
   }
   // ignore bad messages
-  if (message.author.bot
+  if (message.author.bot && !owners.has(message.author.id)
       || message.channel instanceof Discord.DMChannel
-      || (message.content.indexOf(prefix.get(message.guild.id)) !== 0 && !message.isMentioned(client.user.id))) {
+      || (message.content.indexOf(prefix.get(message.guild.id)) !== 0 && !message.mentions.has(client.user))) {
+		log.debug(`Ignoring message ${message.id}`);
     return;
   }
   // get array of arguments and command
-  var args = message.content.toLowerCase().replace(prefix.get(message.guild.id), "").replace(`<@${client.user.id}>`, "").trim().split(/ +/g);
-  var command = args.shift();
-
+  let args = message.content.toLowerCase().replace(prefix.get(message.guild.id), "").trim().split(/ +/g);
+	args = args.filter(arg => !Discord.MessageMentions.USERS_PATTERN.test(arg));
+  const command = args.shift();
   // execute
   if (command in modules) {
 		if (modules[command].strip) {
 			args = args.join(" ").replace(/[^A-Za-z\d\s-]/g, "").trim().split(/ +/g);
 		}
+		args = args.filter(arg => arg !== "");
 		if (!owners.has(message.author.id)) {
 	    const permissions = modules[command].permission;
 	    for (let permission of permissions) {

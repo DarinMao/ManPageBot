@@ -6,7 +6,7 @@ const Help = function() {}
 
 Help.prototype.execute = async function(prefix, command, args, message, client) {
   const p = prefix.get(message.guild.id);
-  const embed = new Discord.RichEmbed()
+  const embed = new Discord.MessageEmbed()
     .setTitle("ManPage Bot Command List")
     .setDescription("This bot provides manual pages for Linux and Windows commands\n```This guild's prefix is currently set to: \"" + p + "\"```")
     .setColor(0x009698)
