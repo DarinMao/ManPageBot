@@ -19,7 +19,7 @@ const log = require("./modules/logger.js");
 
 // log all errors and continue
 process.on('unhandledRejection', (reason) => {
-	log.error(reason);
+	log.error(`Unhandled Rejection at: Promise ${promise} reason: ${reason}`);
 });
 
 // modules
@@ -53,7 +53,7 @@ client.on('ready', () => {
 	updateStatus();
 	dbl.postStats(client.guilds.cache.size);
 	setInterval(() => {
-	    updateStatus();
+		updateStatus();
 	}, 10000);
 	setInterval(() => {
 		dbl.postStats(client.guilds.cache.size);
@@ -71,16 +71,16 @@ const updateStatus = () => {
     	statusIndex++;
     }
     else if (statusIndex == 1) {
-        let gameString = client.users.cache.size + " user";
-        if (client.users.cache.size != 1) gameString += "s";
-        client.user.setActivity(gameString);
-        log.debug("Set status to users");
-        statusIndex++;
+      let gameString = client.users.cache.size + " user";
+      if (client.users.cache.size != 1) gameString += "s";
+      client.user.setActivity(gameString);
+      log.debug("Set status to users");
+      statusIndex++;
     }
     else if (statusIndex == 2) {
-        client.user.setActivity("use !help");
-        log.debug("Set status to help");
-        statusIndex = 0;
+			client.user.setActivity("use !help");
+      log.debug("Set status to help");
+      statusIndex = 0;
     }
 };
 
@@ -98,17 +98,17 @@ client.on('guildDelete', guild => {
 
 // detect commands
 client.on("message", async message => {
-  // set unset prefix
-  if (prefix.get(message.guild.id) == null) {
-    prefix.set(message.guild.id, config.prefix);
-    log.debug(`Set unset prefix for ${message.guild.id}`);
-  }
   // ignore bad messages
   if (message.author.bot && !owners.has(message.author.id)
-      || message.channel instanceof Discord.DMChannel
+      || ! message.channel instanceof Discord.GuildChannel
       || (message.content.indexOf(prefix.get(message.guild.id)) !== 0 && !message.mentions.has(client.user))) {
 		log.debug(`Ignoring message ${message.id}`);
     return;
+  }
+	// set unset prefix
+  if (prefix.get(message.guild.id) == null) {
+    prefix.set(message.guild.id, config.prefix);
+    log.debug(`Set unset prefix for ${message.guild.id}`);
   }
   // get array of arguments and command
   let args = message.content.toLowerCase().replace(prefix.get(message.guild.id), "").trim().split(/ +/g);
