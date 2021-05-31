@@ -1,0 +1,7 @@
+[submodule "windows/PowerShell-Docs"]
+	path = windows/PowerShell-Docs
+	url = https://github.com/MicrosoftDocs/PowerShell-Docs
+	branch = staging
+[submodule "windows/windowsserverdocs"]
+	path = windows/windowsserverdocs
+	url = https://github.com/MicrosoftDocs/windowsserverdocs

@@ -26,15 +26,7 @@ Use `!help` or view [the command list](https://manpagebot.tk/commands)
     ```
 3. Set up the Windows documentation repositories
     ```
-    mkdir windows
-    cd windows
-    git clone https://github.com/MicrosoftDocs/windowsserverdocs
-    cd windowsserverdocs
-    git checkout master
-    cd ..
-    git clone https://github.com/MicrosoftDocs/PowerShell-Docs
-    cd PowerShell-Docs
-    git checkout staging
+	git submodule --init
     ```
 4. Return to the root directory and start the bot
     ```
